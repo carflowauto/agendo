@@ -1,10 +1,11 @@
 import { CopyButton } from "@/components/copy-button";
 import { PhotoUploader } from "@/components/photo-uploader";
+import { ProColumn } from "@/components/pro-shell";
 import { QrCode } from "@/components/qr-code";
-import { Flash, PageHeader, cardClass, fieldClass, labelClass } from "@/components/ui";
-import Link from "next/link";
+import { Flash, cardClass, fieldClass } from "@/components/ui";
 import { requestOrigin } from "@/lib/origin";
-import { addPhoto, deletePhoto, saveProfile } from "@/server/actions";
+import { smsHref, waHref } from "@/lib/phone";
+import { addPhoto, deletePhoto } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
 import type { Photo } from "@/lib/types";
 
@@ -16,69 +17,57 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
   const { data: photos } = await supabase.from("photos").select("*").eq("profile_id", profile.id).order("sort_order");
   const origin = await requestOrigin();
   const url = `${origin}/${profile.slug}`;
+  const text = `Réservez en ligne chez ${profile.full_name} : ${url}`;
 
   return (
-    <div className="space-y-6">
-      <PageHeader title="Ma page" subtitle="Ce que voient vos clientes" />
-      <Flash ok={params.ok} erreur={params.erreur} />
-      <section className={`${cardClass} p-5 grid md:grid-cols-[220px_1fr] gap-6 items-center`}>
-        <QrCode value={url} />
+    <ProColumn
+      header={
         <div>
-          <p className="text-sm text-slate-500">Lien vitrine</p>
-          <p className="mt-1 font-semibold break-all">{url}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <CopyButton value={url} label="Copier le lien" />
-            <a className="inline-flex h-10 px-4 items-center rounded-xl border border-slate-300 text-sm font-semibold" href={url} target="_blank" rel="noreferrer">Ouvrir</a>
-          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Ma page</h1>
+          <p className="text-sm text-slate-500">Le lien que vos clientes ouvrent</p>
+          <Flash ok={params.ok} erreur={params.erreur} />
         </div>
-      </section>
-
-      <form action={saveProfile} className={`${cardClass} p-5 space-y-3`}>
-        <h2 className="font-bold">Présentation</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          <label className={labelClass}>Nom<input name="full_name" required defaultValue={profile.full_name} className={fieldClass} /></label>
-          <label className={labelClass}>Métier<input name="profession" required defaultValue={profile.profession} className={fieldClass} /></label>
-          <label className={labelClass}>Ville<input name="city" defaultValue={profile.city} className={fieldClass} /></label>
-          <label className={labelClass}>Téléphone<input name="phone" defaultValue={profile.phone} className={fieldClass} /></label>
+      }
+      actions={
+        <div className={`${cardClass} px-3 py-3`}>
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{profile.profession}</p>
+          <p className="text-lg font-extrabold text-slate-900">{profile.full_name}</p>
+          <p className="text-sm text-slate-500">{[profile.city, profile.address].filter(Boolean).join(" · ") || "Ajoutez l’adresse dans Réglages"}</p>
         </div>
-        <label className={labelClass}>Adresse<input name="address" defaultValue={profile.address ?? ""} className={fieldClass} /></label>
-        <label className={labelClass}>Texte de la page<textarea name="bio" rows={3} defaultValue={profile.bio ?? ""} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></label>
-        <label className={labelClass}>
-          Adresse de la page
-          <span className="mt-1 flex rounded-lg border border-slate-300 overflow-hidden">
-            <span className="px-3 flex items-center bg-slate-50 text-sm text-slate-500 border-r border-slate-300">/</span>
-            <input name="slug" defaultValue={profile.slug} required className="flex-1 px-3 h-10 text-sm outline-none" />
-          </span>
-        </label>
-        <button className="h-10 px-4 rounded-xl grad text-white text-sm font-semibold">Enregistrer</button>
-      </form>
-
-      <p className="text-sm text-slate-600">
-        Prestations et horaires se règlent dans <Link href="/espace/reglages#prestations" className="font-semibold text-brand-700">Réglages</Link>.
-      </p>
-
-      <section className={`${cardClass} p-5`}>
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="font-bold">Photos</h2>
+      }
+    >
+      <p className="break-all rounded-2xl bg-white/80 px-3 py-2 text-sm font-medium text-slate-700">{url}</p>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <CopyButton value={url} label="Copier le lien" />
+        <a className="flex h-11 items-center justify-center rounded-2xl bg-white/80 text-sm font-semibold" href={url} target="_blank" rel="noreferrer">Aperçu</a>
+        <a className="flex h-11 items-center justify-center rounded-2xl bg-emerald-50 text-sm font-semibold text-emerald-800" href={waHref("", text)} target="_blank" rel="noreferrer">WhatsApp</a>
+        <a className="flex h-11 items-center justify-center rounded-2xl bg-white/80 text-sm font-semibold" href={smsHref("", text)}>SMS</a>
+      </div>
+      <div className={`${cardClass} mt-3 flex justify-center p-3`}>
+        <QrCode value={url} size={168} />
+      </div>
+      <section className={`${cardClass} mt-3 p-3`}>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-semibold">Photos</h2>
           <PhotoUploader userId={profile.id} />
         </div>
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="mt-3 grid grid-cols-3 gap-2">
           {((photos ?? []) as Photo[]).map((photo) => (
-            <figure key={photo.id} className="relative">
-              <img src={photo.url} alt={photo.caption ?? ""} className="h-36 w-full object-cover rounded-xl border border-slate-200" />
+            <figure key={photo.id}>
+              <img src={photo.url} alt={photo.caption ?? ""} className="h-20 w-full rounded-xl object-cover" />
               <form action={deletePhoto}>
                 <input type="hidden" name="id" value={photo.id} />
                 <input type="hidden" name="url" value={photo.url} />
-                <button className="mt-1 text-xs font-semibold text-rose-600">Retirer</button>
+                <button className="text-xs font-semibold text-rose-600">Retirer</button>
               </form>
             </figure>
           ))}
         </div>
-        <form action={addPhoto} className="mt-4 flex flex-col sm:flex-row gap-2">
-          <input name="url" placeholder="https://… ou envoyez un fichier ci-dessus" className={fieldClass + " mt-0"} />
-          <button className="h-10 px-4 rounded-xl border border-slate-300 text-sm font-semibold">Ajouter l’URL</button>
+        <form action={addPhoto} className="mt-2 flex gap-2">
+          <input name="url" placeholder="https://…" className={fieldClass + " mt-0"} />
+          <button className="h-11 shrink-0 rounded-2xl bg-white px-3 text-sm font-semibold">OK</button>
         </form>
       </section>
-    </div>
+    </ProColumn>
   );
 }

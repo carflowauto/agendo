@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Flash, PageHeader, cardClass, fieldClass, labelClass } from "@/components/ui";
-import { formatPhone } from "@/lib/phone";
+import { ProColumn } from "@/components/pro-shell";
+import { Flash, cardClass, fieldClass, labelClass } from "@/components/ui";
+import { formatPhone, initials } from "@/lib/phone";
 import { saveClient } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
 import type { ClientRow } from "@/lib/types";
@@ -17,36 +18,44 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
   const clients = (data ?? []) as ClientRow[];
 
   return (
-    <div>
-      <PageHeader title="Clientes" subtitle={`${clients.length} fiche${clients.length > 1 ? "s" : ""}`} />
-      <Flash ok={params.ok} erreur={params.erreur} />
-      <form className="mb-4" action="/espace/clientes">
-        <input name="q" defaultValue={params.q ?? ""} placeholder="Nom ou téléphone" className={fieldClass + " max-w-sm"} />
-      </form>
-      <div className="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
-        <ul className={`${cardClass} divide-y divide-slate-100`}>
-          {clients.length === 0 ? <li className="p-6 text-sm text-slate-500">Aucune cliente pour l’instant.</li> : null}
-          {clients.map((client) => (
-            <li key={client.id}>
-              <Link href={`/espace/clientes/${client.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-slate-50">
-                <span>
-                  <span className="block font-semibold text-slate-900">{client.full_name}</span>
-                  <span className="block text-sm text-slate-500">{formatPhone(client.phone)}</span>
-                </span>
-                <span className="text-sm text-brand-700 font-semibold">Ouvrir</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <form action={saveClient} className={`${cardClass} p-4 space-y-3`}>
-          <h2 className="font-bold">Nouvelle cliente</h2>
+    <ProColumn
+      header={
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Clientes</h1>
+          <p className="text-sm text-slate-500">{clients.length} fiche{clients.length > 1 ? "s" : ""}</p>
+          <Flash ok={params.ok} erreur={params.erreur} />
+        </div>
+      }
+      actions={
+        <form action="/espace/clientes">
+          <input name="q" defaultValue={params.q ?? ""} placeholder="Rechercher une cliente" className={fieldClass} />
+        </form>
+      }
+    >
+      <ul className="space-y-2">
+        {clients.length === 0 ? <li className={`${cardClass} px-4 py-5 text-sm text-slate-500`}>Aucune cliente pour cette recherche.</li> : null}
+        {clients.map((client) => (
+          <li key={client.id}>
+            <Link href={`/espace/clientes/${client.id}`} className={`${cardClass} flex items-center gap-3 px-3 py-2.5`}>
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-brand-500 text-sm font-bold text-white">{initials(client.full_name)}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold text-slate-900">{client.full_name}</span>
+                <span className="block text-sm text-slate-500">{formatPhone(client.phone)}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <details className={`${cardClass} mt-3 p-3`}>
+        <summary className="cursor-pointer text-sm font-semibold">Nouvelle cliente</summary>
+        <form action={saveClient} className="mt-3 space-y-2">
           <label className={labelClass}>Nom<input name="name" required className={fieldClass} /></label>
           <label className={labelClass}>Téléphone<input name="phone" required className={fieldClass} /></label>
           <label className={labelClass}>E-mail<input name="email" type="email" className={fieldClass} /></label>
-          <label className={labelClass}>Notes<textarea name="notes" rows={3} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></label>
-          <button className="w-full h-10 rounded-xl grad text-white text-sm font-semibold">Créer la fiche</button>
+          <label className={labelClass}>Notes<textarea name="notes" rows={2} className="mt-1 w-full rounded-2xl border border-white/80 bg-white px-3 py-2 text-sm" /></label>
+          <button className="h-11 w-full rounded-2xl grad text-sm font-semibold text-white">Créer la fiche</button>
         </form>
-      </div>
-    </div>
+      </details>
+    </ProColumn>
   );
 }

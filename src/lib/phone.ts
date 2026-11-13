@@ -21,6 +21,11 @@ export function telHref(phone: string) {
   return `tel:${phone.replace(/\s/g, "")}`;
 }
 
+export function smsHref(phone: string, text: string) {
+  const target = phone.replace(/\s/g, "");
+  return `sms:${target}?&body=${encodeURIComponent(text)}`;
+}
+
 export function waHref(phone: string, text?: string) {
   const digits = waDigits(phone);
   const base = digits ? `https://wa.me/${digits}` : "https://wa.me/";

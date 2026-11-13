@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/lib/slots.test.ts src/lib/signup.test.ts",
+    "test": "tsx --test src/lib/slots.test.ts src/lib/signup.test.ts src/lib/today.test.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --keep-vars",
     "cf:build": "opennextjs-cloudflare build",

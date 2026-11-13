@@ -270,11 +270,13 @@ export async function saveProfile(formData: FormData) {
   const slug = String(formData.get("slug") ?? "")
     .trim()
     .toLowerCase();
+  const back = String(formData.get("retour") ?? "/espace/reglages");
+  const path = back === "/espace/ma-page" || back === "/espace/reglages" ? back : "/espace/reglages";
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length < 3 || RESERVED_SLUGS.has(slug)) {
-    go("/espace/ma-page", "Cette adresse de page est invalide ou réservée.");
+    go(path, "Cette adresse de page est invalide ou réservée.");
   }
   const { data: taken } = await supabase.from("profiles").select("id").eq("slug", slug).neq("id", profile.id).maybeSingle();
-  if (taken) go("/espace/ma-page", "Cette adresse est déjà utilisée.");
+  if (taken) go(path, "Cette adresse est déjà utilisée.");
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -287,10 +289,11 @@ export async function saveProfile(formData: FormData) {
       slug,
     })
     .eq("id", profile.id);
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(path, dbError(error));
   revalidatePath("/espace/ma-page");
+  revalidatePath("/espace/reglages");
   revalidatePath(`/${slug}`);
-  redirect("/espace/ma-page?ok=1");
+  redirect(`${path}?ok=1`);
 }
 
 export async function saveHours(formData: FormData) {
