@@ -18,10 +18,12 @@ const NAV = [
 export function ProShell({
   profile,
   email,
+  needsSetup = false,
   children,
 }: {
   profile: { full_name: string; profession: string; city: string; slug: string };
   email: string;
+  needsSetup?: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -98,7 +100,15 @@ export function ProShell({
             </form>
           </div>
         </header>
-        <main className="p-4 sm:p-8">{children}</main>
+        <main className="p-4 sm:p-8">
+          {needsSetup ? (
+            <Link href="/espace/reglages#prestations" className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-950">
+              Ajoute tes prestations et horaires dans Réglages
+              <span aria-hidden="true">→</span>
+            </Link>
+          ) : null}
+          {children}
+        </main>
       </div>
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 grid grid-cols-5">
         {NAV.map((item) => (

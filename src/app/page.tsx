@@ -28,7 +28,7 @@ export default function HomePage() {
               <Link href="/inscription" className="inline-flex justify-center items-center px-6 h-12 rounded-xl grad text-white font-semibold shadow-lg shadow-brand-500/30">Créer mon espace gratuitement</Link>
               <Link href="/connexion" className="inline-flex justify-center items-center px-6 h-12 rounded-xl border border-slate-300 bg-white font-semibold">J’ai déjà un compte</Link>
             </div>
-            <p className="mt-4 text-sm text-slate-500">Inscription en quelques minutes · nom, métier, ville, prestations, horaires.</p>
+            <p className="mt-4 text-sm text-slate-500">Inscription en trois étapes · enseigne, ville, accès.</p>
           </div>
           <div className="bg-white rounded-2xl shadow-2xl shadow-brand-900/10 border border-slate-200 p-5">
             <p className="text-xs text-slate-500">Aujourd’hui</p>

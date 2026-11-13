@@ -1,9 +1,11 @@
 import { CopyButton } from "@/components/copy-button";
+import { OfferSettings } from "@/components/offer-settings";
 import { PasswordForm } from "@/components/auth-forms";
 import { Flash, PageHeader, cardClass, fieldClass, labelClass } from "@/components/ui";
 import { requestOrigin } from "@/lib/origin";
 import { addTimeOff, deleteTimeOff, loadDemo, saveSettings } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
+import type { OpeningHour, Service } from "@/lib/types";
 
 export const metadata = { title: "Réglages" };
 
@@ -14,6 +16,8 @@ type GoogleRow = { status: string; last_error: string | null; last_synced_at: st
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
   const params = await searchParams;
   const { supabase, profile } = await requireProfile();
+  const { data: serviceRows } = await supabase.from("services").select("*").eq("profile_id", profile.id).order("sort_order");
+  const { data: hourRows } = await supabase.from("opening_hours").select("*").eq("profile_id", profile.id).order("isodow");
   const { data: periods } = await supabase.from("time_off").select("*").eq("profile_id", profile.id).order("starts_on");
   const { data: mails } = await supabase.from("email_outbox").select("status").eq("profile_id", profile.id);
   const { data: google } = await supabase
@@ -32,8 +36,9 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <PageHeader title="Réglages" subtitle="Congés, délai de réservation, rappels et calendrier" />
+      <PageHeader title="Réglages" subtitle="Prestations, horaires, congés et rappels" />
       <Flash ok={params.ok} erreur={params.erreur} />
+      <OfferSettings services={(serviceRows ?? []) as Service[]} hours={(hourRows ?? []) as OpeningHour[]} />
 
       <form action={saveSettings} className={`${cardClass} p-5 grid sm:grid-cols-3 gap-3`}>
         <label className={labelClass}>Délai minimum (heures)<input name="min_notice_hours" type="number" min={0} step="0.5" defaultValue={profile.min_notice_minutes / 60} className={fieldClass} /></label>
