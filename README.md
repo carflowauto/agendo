@@ -23,6 +23,7 @@ Cette URL est publique. Elle est déjà dans [`.env.example`](.env.example). **A
 1. Ouvrir [le SQL Editor Supabase](https://supabase.com/dashboard/project/dilkyofvugsaoqrawnwm/sql/new) du projet `dilkyofvugsaoqrawnwm`.
 2. Coller **tout** le fichier [`supabase/migrations/20261113120000_init.sql`](supabase/migrations/20261113120000_init.sql).
 3. Lancer la requête une fois.
+4. Puis exécuter [`supabase/migrations/20261113233000_inscription_sans_catalogue.sql`](supabase/migrations/20261113233000_inscription_sans_catalogue.sql). Elle retire les prestations et horaires créés automatiquement : l’inscription ne demande plus que l’enseigne, le métier, la ville, le téléphone et l’accès. Le catalogue se complète dans Réglages.
 
 Le script crée les tables, la RLS, le trigger d’inscription, les fonctions de réservation et le bucket de photos `vitrine`. Il peut être relancé : les objets déjà là sont recréés ou laissés en place.
 
@@ -55,7 +56,7 @@ npm install
 npm run dev
 ```
 
-Ouvrir <http://localhost:3000/inscription>, créer le compte (nom, métier, ville, téléphone, prestations, horaires), puis arriver sur **Aujourd’hui**.
+Ouvrir <http://localhost:3000/inscription>, créer le compte en trois étapes (enseigne, métier, ville, téléphone, e-mail), puis arriver sur **Aujourd’hui**. Les prestations et les horaires s’ajoutent ensuite dans Réglages.
 
 `npm test` vérifie le calcul des créneaux (fuseau Europe/Paris). `npm run typecheck` vérifie TypeScript.
 
@@ -117,8 +118,8 @@ Le détail est dans [`supabase/seed.sql`](supabase/seed.sql).
 - Aujourd’hui : rendez-vous du jour, liens `tel:` et `wa.me`, chiffre d’affaires, relance « c’est l’heure du remplissage ».
 - Agenda : semaine, glisser pour déplacer, bloquer un créneau, rendez-vous manuel.
 - Clientes : fiches, historique, notes.
-- Ma page : prestations, horaires, photos (fichier ou URL), lien et QR code.
-- Réglages : congés, délai minimum, délai de rappel, semaines avant remplissage, lien iCal.
+- Ma page : présentation, photos, lien et QR code.
+- Réglages : prestations, horaires, congés, délai minimum, délai de rappel, semaines avant remplissage, lien iCal.
 - Invitation : **Inviter une cliente** crée un lien vers un ou plusieurs créneaux. La cliente saisit nom et téléphone, le rendez-vous est confirmé.
 - Vitrine publique `/{slug}` : prestations et réservation d’un créneau libre, sans compte.
 - Abonnement calendrier : `https://…/ical/{jeton}` (ou `webcal://`).

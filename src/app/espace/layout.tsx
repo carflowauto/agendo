@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { ProShell } from "@/components/pro-shell";
 import { btnSecondary } from "@/components/ui";
+import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/server/actions";
 import { getSessionProfile } from "@/server/profile";
 
@@ -24,8 +25,14 @@ export default async function EspaceLayout({ children }: { children: ReactNode }
       </main>
     );
   }
+  const supabase = await createClient();
+  const [services, hours] = await Promise.all([
+    supabase.from("services").select("id", { count: "exact", head: true }).eq("profile_id", profile.id),
+    supabase.from("opening_hours").select("id", { count: "exact", head: true }).eq("profile_id", profile.id),
+  ]);
+  const needsSetup = (services.count ?? 0) === 0 || (hours.count ?? 0) === 0;
   return (
-    <ProShell profile={profile} email={user.email ?? ""}>
+    <ProShell profile={profile} email={user.email ?? ""} needsSetup={needsSetup}>
       {children}
     </ProShell>
   );

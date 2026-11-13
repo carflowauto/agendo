@@ -2,25 +2,20 @@ import { CopyButton } from "@/components/copy-button";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { QrCode } from "@/components/qr-code";
 import { Flash, PageHeader, cardClass, fieldClass, labelClass } from "@/components/ui";
-import { formatDuration, weekdayName } from "@/lib/dates";
-import { formatEuro } from "@/lib/money";
+import Link from "next/link";
 import { requestOrigin } from "@/lib/origin";
-import { addPhoto, deletePhoto, deleteService, saveHours, saveProfile, saveService } from "@/server/actions";
+import { addPhoto, deletePhoto, saveProfile } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
-import type { OpeningHour, Photo, Service } from "@/lib/types";
+import type { Photo } from "@/lib/types";
 
 export const metadata = { title: "Ma page" };
 
 export default async function MyPage({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
   const params = await searchParams;
   const { profile, supabase } = await requireProfile();
-  const { data: services } = await supabase.from("services").select("*").eq("profile_id", profile.id).order("sort_order");
-  const { data: hours } = await supabase.from("opening_hours").select("*").eq("profile_id", profile.id).order("isodow");
   const { data: photos } = await supabase.from("photos").select("*").eq("profile_id", profile.id).order("sort_order");
   const origin = await requestOrigin();
   const url = `${origin}/${profile.slug}`;
-  const hourRows = (hours ?? []) as OpeningHour[];
-  const byDay = new Map(hourRows.map((hour) => [hour.isodow, hour]));
 
   return (
     <div className="space-y-6">
@@ -58,55 +53,9 @@ export default async function MyPage({ searchParams }: { searchParams: Promise<{
         <button className="h-10 px-4 rounded-xl grad text-white text-sm font-semibold">Enregistrer</button>
       </form>
 
-      <section className={`${cardClass} p-5`}>
-        <h2 className="font-bold">Prestations</h2>
-        <ul className="mt-4 space-y-4">
-          {((services ?? []) as Service[]).map((service) => (
-            <li key={service.id} className="border border-slate-100 rounded-xl p-3">
-              <form action={saveService} className="grid sm:grid-cols-4 gap-2 items-end">
-                <input type="hidden" name="id" value={service.id} />
-                <label className={labelClass}>Nom<input name="name" defaultValue={service.name} className={fieldClass} /></label>
-                <label className={labelClass}>Minutes<input name="duration_min" defaultValue={service.duration_min} className={fieldClass} /></label>
-                <label className={labelClass}>Prix €<input name="price" defaultValue={(service.price_cents / 100).toString().replace(".", ",")} className={fieldClass} /></label>
-                <button className="h-10 rounded-lg border border-slate-300 text-sm font-semibold">Modifier</button>
-                <label className={`${labelClass} sm:col-span-4`}>Description<input name="description" defaultValue={service.description ?? ""} className={fieldClass} /></label>
-              </form>
-              <p className="mt-1 text-xs text-slate-400">{formatDuration(service.duration_min)} · {formatEuro(service.price_cents)}</p>
-              <form action={deleteService}>
-                <input type="hidden" name="id" value={service.id} />
-                <button className="text-sm text-rose-600 font-semibold">Retirer</button>
-              </form>
-            </li>
-          ))}
-        </ul>
-        <form action={saveService} className="mt-4 grid sm:grid-cols-4 gap-2 items-end">
-          <label className={labelClass}>Nouvelle<input name="name" placeholder="Nail art" className={fieldClass} /></label>
-          <label className={labelClass}>Minutes<input name="duration_min" defaultValue="45" className={fieldClass} /></label>
-          <label className={labelClass}>Prix €<input name="price" defaultValue="20" className={fieldClass} /></label>
-          <button className="h-10 rounded-xl grad text-white text-sm font-semibold">Ajouter</button>
-        </form>
-      </section>
-
-      <form action={saveHours} className={`${cardClass} p-5`}>
-        <h2 className="font-bold">Horaires</h2>
-        <div className="mt-4 space-y-2">
-          {[1, 2, 3, 4, 5, 6, 7].map((day) => {
-            const hour = byDay.get(day);
-            return (
-              <div key={day} className="grid grid-cols-[7rem_1fr_1fr_auto] gap-2 items-center">
-                <span className="text-sm">{weekdayName(day)}</span>
-                <input type="time" name={`opens_${day}`} defaultValue={(hour?.opens ?? "09:30").slice(0, 5)} className={fieldClass + " mt-0"} />
-                <input type="time" name={`closes_${day}`} defaultValue={(hour?.closes ?? "18:30").slice(0, 5)} className={fieldClass + " mt-0"} />
-                <label className="text-xs text-slate-600 flex items-center gap-1">
-                  <input type="checkbox" name={`closed_${day}`} defaultChecked={hour?.is_closed ?? false} />
-                  Fermé
-                </label>
-              </div>
-            );
-          })}
-        </div>
-        <button className="mt-4 h-10 px-4 rounded-xl grad text-white text-sm font-semibold">Enregistrer les horaires</button>
-      </form>
+      <p className="text-sm text-slate-600">
+        Prestations et horaires se règlent dans <Link href="/espace/reglages#prestations" className="font-semibold text-brand-700">Réglages</Link>.
+      </p>
 
       <section className={`${cardClass} p-5`}>
         <div className="flex items-center justify-between gap-3">

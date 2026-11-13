@@ -17,6 +17,11 @@ function go(path: string, error?: string | null): never {
   redirect(`${path}?ok=1`);
 }
 
+function catalogPath(formData: FormData) {
+  const back = String(formData.get("retour") ?? "/espace/reglages");
+  return back === "/espace/ma-page" || back === "/espace/reglages" ? back : "/espace/reglages";
+}
+
 async function findOrCreateClient(
   supabase: Awaited<ReturnType<typeof requireProfile>>["supabase"],
   profileId: string,
@@ -290,6 +295,7 @@ export async function saveProfile(formData: FormData) {
 
 export async function saveHours(formData: FormData) {
   const { supabase, profile } = await requireProfile();
+  const back = catalogPath(formData);
   const rows = [1, 2, 3, 4, 5, 6, 7].map((isodow) => ({
     profile_id: profile.id,
     isodow,
@@ -298,37 +304,42 @@ export async function saveHours(formData: FormData) {
     is_closed: formData.get(`closed_${isodow}`) === "on",
   }));
   const { error } = await supabase.from("opening_hours").upsert(rows, { onConflict: "profile_id,isodow" });
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(back, dbError(error));
+  revalidatePath("/espace/reglages");
   revalidatePath("/espace/ma-page");
-  redirect("/espace/ma-page?ok=Horaires%20enregistr%C3%A9s");
+  redirect(`${back}?ok=Horaires%20enregistr%C3%A9s`);
 }
 
 export async function saveService(formData: FormData) {
   const { supabase, profile } = await requireProfile();
+  const back = catalogPath(formData);
   const id = String(formData.get("id") ?? "");
   const name = String(formData.get("name") ?? "").trim();
   const duration = Number(formData.get("duration_min"));
   const cents = eurosToCents(String(formData.get("price") ?? ""));
   const description = String(formData.get("description") ?? "").trim();
   if (name.length < 2 || !Number.isFinite(duration) || duration < 5 || cents === null) {
-    go("/espace/ma-page", "Vérifiez le nom, la durée et le prix.");
+    go(back, "Vérifiez le nom, la durée et le prix.");
   }
   const payload = { name, duration_min: Math.round(duration), price_cents: cents, description: description || null };
   const { error } = id
     ? await supabase.from("services").update(payload).eq("id", id).eq("profile_id", profile.id)
     : await supabase.from("services").insert({ ...payload, profile_id: profile.id, active: true });
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(back, dbError(error));
+  revalidatePath("/espace/reglages");
   revalidatePath("/espace/ma-page");
-  redirect("/espace/ma-page?ok=1");
+  redirect(`${back}?ok=1`);
 }
 
 export async function deleteService(formData: FormData) {
   const { supabase, profile } = await requireProfile();
+  const back = catalogPath(formData);
   const id = String(formData.get("id") ?? "");
   const { error } = await supabase.from("services").delete().eq("id", id).eq("profile_id", profile.id);
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(back, dbError(error));
+  revalidatePath("/espace/reglages");
   revalidatePath("/espace/ma-page");
-  redirect("/espace/ma-page?ok=Prestation%20retir%C3%A9e");
+  redirect(`${back}?ok=Prestation%20retir%C3%A9e`);
 }
 
 export async function addPhoto(formData: FormData) {
