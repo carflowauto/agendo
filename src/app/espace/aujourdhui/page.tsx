@@ -50,7 +50,7 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
       actions={
         <>
           {needsSetup ? (
-            <Link href="/espace/reglages#prestations" className="flex items-center justify-between rounded-2xl bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950">
+            <Link href="/espace/reglages/prestations" className="flex items-center justify-between rounded-2xl bg-amber-50 px-3 py-2 text-sm font-medium text-amber-950">
               Ajoute tes prestations et horaires
               <span aria-hidden="true">→</span>
             </Link>

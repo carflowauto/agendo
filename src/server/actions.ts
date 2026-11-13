@@ -19,7 +19,8 @@ function go(path: string, error?: string | null): never {
 
 function catalogPath(formData: FormData) {
   const back = String(formData.get("retour") ?? "/espace/reglages");
-  return back === "/espace/ma-page" || back === "/espace/reglages" ? back : "/espace/reglages";
+  if (back === "/espace/ma-page" || back === "/espace/reglages" || back.startsWith("/espace/reglages/")) return back;
+  return "/espace/reglages";
 }
 
 async function findOrCreateClient(
@@ -265,6 +266,24 @@ export async function saveClient(formData: FormData) {
   redirect(`/espace/clientes/${data.id}?ok=1`);
 }
 
+export async function saveBoutique(formData: FormData) {
+  const { supabase, profile } = await requireProfile();
+  const fullName = String(formData.get("full_name") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+  const address = String(formData.get("address") ?? "").trim();
+  if (fullName.length < 2) go("/espace/reglages/boutique", "Indiquez le nom de l’enseigne.");
+  const { error } = await supabase
+    .from("profiles")
+    .update({ full_name: fullName, city, phone, address: address || null })
+    .eq("id", profile.id);
+  if (error) go("/espace/reglages/boutique", dbError(error));
+  revalidatePath("/espace/reglages/boutique");
+  revalidatePath("/espace/ma-page");
+  revalidatePath(`/${profile.slug}`);
+  redirect("/espace/reglages/boutique?ok=1");
+}
+
 export async function saveProfile(formData: FormData) {
   const { supabase, profile } = await requireProfile();
   const slug = String(formData.get("slug") ?? "")
@@ -376,7 +395,7 @@ export async function saveSettings(formData: FormData) {
   const noticeHours = Number(formData.get("min_notice_hours"));
   const reminder = Number(formData.get("reminder_hours"));
   const refill = Number(formData.get("refill_weeks"));
-  if (![noticeHours, reminder, refill].every(Number.isFinite)) go("/espace/reglages", "Valeur invalide.");
+  if (![noticeHours, reminder, refill].every(Number.isFinite)) go("/espace/reglages/preferences", "Valeur invalide.");
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -385,10 +404,10 @@ export async function saveSettings(formData: FormData) {
       refill_weeks: Math.min(52, Math.max(1, Math.round(refill))),
     })
     .eq("id", profile.id);
-  if (error) go("/espace/reglages", dbError(error));
-  revalidatePath("/espace/reglages");
+  if (error) go("/espace/reglages/preferences", dbError(error));
+  revalidatePath("/espace/reglages/preferences");
   revalidatePath("/espace/aujourdhui");
-  redirect("/espace/reglages?ok=1");
+  redirect("/espace/reglages/preferences?ok=1");
 }
 
 export async function addTimeOff(formData: FormData) {
@@ -396,23 +415,23 @@ export async function addTimeOff(formData: FormData) {
   const starts = String(formData.get("starts_on") ?? "");
   const ends = String(formData.get("ends_on") ?? "");
   const reason = String(formData.get("reason") ?? "").trim();
-  if (!isDateKey(starts) || !isDateKey(ends) || ends < starts) go("/espace/reglages", "Période de congés invalide.");
+  if (!isDateKey(starts) || !isDateKey(ends) || ends < starts) go("/espace/reglages/conges", "Période de congés invalide.");
   const { error } = await supabase.from("time_off").insert({
     profile_id: profile.id,
     starts_on: starts,
     ends_on: ends,
     reason: reason || null,
   });
-  if (error) go("/espace/reglages", dbError(error));
-  revalidatePath("/espace/reglages");
-  redirect("/espace/reglages?ok=Cong%C3%A9s%20ajout%C3%A9s");
+  if (error) go("/espace/reglages/conges", dbError(error));
+  revalidatePath("/espace/reglages/conges");
+  redirect("/espace/reglages/conges?ok=Cong%C3%A9s%20ajout%C3%A9s");
 }
 
 export async function deleteTimeOff(formData: FormData) {
   const { supabase, profile } = await requireProfile();
   const id = String(formData.get("id") ?? "");
   const { error } = await supabase.from("time_off").delete().eq("id", id).eq("profile_id", profile.id);
-  if (error) go("/espace/reglages", dbError(error));
-  revalidatePath("/espace/reglages");
-  redirect("/espace/reglages?ok=1");
+  if (error) go("/espace/reglages/conges", dbError(error));
+  revalidatePath("/espace/reglages/conges");
+  redirect("/espace/reglages/conges?ok=1");
 }
