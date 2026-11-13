@@ -7,9 +7,19 @@ import { bookPublic, getWeekSlots, type DaySlots } from "@/server/public";
 import type { BookingResult, PublicService } from "@/lib/types";
 import { btnPrimary, fieldClass, labelClass } from "@/components/ui";
 
-export function BookingWidget({ slug, services }: { slug: string; services: PublicService[] }) {
+export function BookingWidget({
+  slug,
+  services,
+  focusId = null,
+  onBack,
+}: {
+  slug: string;
+  services: PublicService[];
+  focusId?: string | null;
+  onBack?: () => void;
+}) {
   const today = parisDateKey();
-  const [serviceId, setServiceId] = useState(services[0]?.id ?? "");
+  const [serviceId, setServiceId] = useState(focusId ?? services[0]?.id ?? "");
   const [weekStart, setWeekStart] = useState(mondayOf(today));
   const [days, setDays] = useState<Record<string, DaySlots>>({});
   const [selected, setSelected] = useState<string | null>(null);
@@ -37,6 +47,13 @@ export function BookingWidget({ slug, services }: { slug: string; services: Publ
     };
   }, [slug, serviceId, weekStart]);
 
+  useEffect(() => {
+    if (focusId) {
+      setServiceId(focusId);
+      setSelected(null);
+    }
+  }, [focusId]);
+
   if (booking) {
     return (
       <section className="bg-white rounded-2xl border border-slate-200 p-6">
@@ -59,6 +76,9 @@ export function BookingWidget({ slug, services }: { slug: string; services: Publ
 
   return (
     <div className="space-y-6">
+      {focusId ? (
+        <button type="button" onClick={onBack} className="text-sm font-semibold text-brand-700">‹ Toutes les prestations</button>
+      ) : (
       <section className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
         <h2 className="text-lg font-bold text-slate-900">1. Choisissez une prestation</h2>
         <div className="mt-4 divide-y divide-slate-100">
@@ -79,10 +99,11 @@ export function BookingWidget({ slug, services }: { slug: string; services: Publ
           ))}
         </div>
       </section>
+      )}
 
       <section className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-bold text-slate-900">2. Choisissez un créneau</h2>
+          <h2 className="text-lg font-bold text-slate-900">{focusId ? "Choisissez un créneau" : "2. Choisissez un créneau"}</h2>
           <div className="flex items-center gap-2">
             <button type="button" className="w-9 h-9 rounded-lg border border-slate-200" disabled={weekStart <= mondayOf(today)} onClick={() => setWeekStart(addDays(weekStart, -7))} aria-label="Semaine précédente">‹</button>
             <button type="button" className="w-9 h-9 rounded-lg border border-slate-200" onClick={() => setWeekStart(addDays(weekStart, 7))} aria-label="Semaine suivante">›</button>

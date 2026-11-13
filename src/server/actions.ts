@@ -272,10 +272,11 @@ export async function saveBoutique(formData: FormData) {
   const city = String(formData.get("city") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
+  const bio = String(formData.get("bio") ?? "").trim();
   if (fullName.length < 2) go("/espace/reglages/boutique", "Indiquez le nom de l’enseigne.");
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name: fullName, city, phone, address: address || null })
+    .update({ full_name: fullName, city, phone, address: address || null, bio: bio || null })
     .eq("id", profile.id);
   if (error) go("/espace/reglages/boutique", dbError(error));
   revalidatePath("/espace/reglages/boutique");
@@ -367,27 +368,53 @@ export async function deleteService(formData: FormData) {
 export async function addPhoto(formData: FormData) {
   const { supabase, profile } = await requireProfile();
   const url = String(formData.get("url") ?? "").trim();
-  if (!/^https?:\/\//.test(url)) go("/espace/ma-page", "L'adresse de la photo doit commencer par http.");
+  const back = catalogPath(formData);
+  if (!/^https?:\/\//.test(url)) go(back === "/espace/reglages" ? "/espace/ma-page" : back, "L'adresse de la photo doit commencer par http.");
   const { error } = await supabase.from("photos").insert({ profile_id: profile.id, url, caption: String(formData.get("caption") ?? "").trim() || null });
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(back === "/espace/reglages" ? "/espace/ma-page" : back, dbError(error));
   revalidatePath("/espace/ma-page");
-  redirect("/espace/ma-page?ok=1");
+  revalidatePath("/espace/reglages/boutique");
+  redirect(`${back === "/espace/reglages" ? "/espace/ma-page" : back}?ok=1`);
+}
+
+function photoObject(url: string) {
+  for (const bucket of ["boutique-photos", "vitrine"]) {
+    const marker = `/${bucket}/`;
+    const index = url.indexOf(marker);
+    if (index >= 0) return { bucket, path: decodeURIComponent(url.slice(index + marker.length).split("?")[0]) };
+  }
+  return null;
 }
 
 export async function deletePhoto(formData: FormData) {
   const { supabase, profile } = await requireProfile();
+  const back = catalogPath(formData);
+  const target = back === "/espace/reglages" ? "/espace/ma-page" : back;
   const id = String(formData.get("id") ?? "");
   const url = String(formData.get("url") ?? "");
-  const marker = "/vitrine/";
-  const index = url.indexOf(marker);
-  if (index >= 0) {
-    const path = decodeURIComponent(url.slice(index + marker.length).split("?")[0]);
-    await supabase.storage.from("vitrine").remove([path]);
-  }
+  const object = photoObject(url);
+  if (object) await supabase.storage.from(object.bucket).remove([object.path]);
   const { error } = await supabase.from("photos").delete().eq("id", id).eq("profile_id", profile.id);
-  if (error) go("/espace/ma-page", dbError(error));
+  if (error) go(target, dbError(error));
   revalidatePath("/espace/ma-page");
-  redirect("/espace/ma-page?ok=1");
+  revalidatePath("/espace/reglages/boutique");
+  redirect(`${target}?ok=1`);
+}
+
+export async function movePhoto(formData: FormData) {
+  const { supabase, profile } = await requireProfile();
+  const id = String(formData.get("id") ?? "");
+  const direction = formData.get("direction") === "up" ? -1 : 1;
+  const { data } = await supabase.from("photos").select("id, sort_order").eq("profile_id", profile.id).order("sort_order").order("created_at");
+  const photos = [...(data ?? [])];
+  const index = photos.findIndex((photo) => photo.id === id);
+  const swap = index + direction;
+  if (index < 0 || swap < 0 || swap >= photos.length) redirect("/espace/reglages/boutique");
+  const [moved] = photos.splice(index, 1);
+  photos.splice(swap, 0, moved);
+  await Promise.all(photos.map((photo, position) => supabase.from("photos").update({ sort_order: position }).eq("id", photo.id)));
+  revalidatePath("/espace/reglages/boutique");
+  redirect("/espace/reglages/boutique?ok=1");
 }
 
 export async function saveSettings(formData: FormData) {

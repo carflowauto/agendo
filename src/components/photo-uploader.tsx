@@ -28,13 +28,13 @@ export function PhotoUploader({ userId }: { userId: string }) {
             const supabase = createClient();
             const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
             const path = `${userId}/${crypto.randomUUID()}.${ext}`;
-            const upload = await supabase.storage.from("vitrine").upload(path, file, { contentType: file.type });
+            const upload = await supabase.storage.from("boutique-photos").upload(path, file, { contentType: file.type });
             if (upload.error) {
               setError(upload.error.message);
               setPending(false);
               return;
             }
-            const { data } = supabase.storage.from("vitrine").getPublicUrl(path);
+            const { data } = supabase.storage.from("boutique-photos").getPublicUrl(path);
             const insert = await supabase.from("photos").insert({ profile_id: userId, url: data.publicUrl });
             setPending(false);
             if (insert.error) setError(insert.error.message);
