@@ -1,0 +1,3 @@
+# Utilisé par `npm run preview` (runtime Workers local).
+# Les vraies valeurs Supabase restent dans .env.local : Next.js les charge au build.
+NEXTJS_ENV=development

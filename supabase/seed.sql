@@ -1,0 +1,18 @@
+-- Données de démonstration Agendo
+--
+-- Le plus simple : une fois connectée à l'espace pro, ouvrir Aujourd'hui
+-- et cliquer sur « Charger un exemple de journée ». Cela appelle
+-- public.seed_demo_data() pour le compte en cours.
+--
+-- Depuis le SQL Editor (rôle postgres), remplacez l'UUID par celui du compte
+-- (Authentication → Users) :
+--
+--   select public.seed_demo_for_profile('00000000-0000-0000-0000-000000000000');
+--
+-- La fonction efface les fiches et rendez-vous déjà marqués comme démo,
+-- puis recrée une journée type de prothésiste ongulaire (pose, pause,
+-- remplissage, dépose), un rendez-vous demain, et une pose datée
+-- exactement de « refill_weeks » semaines pour la suggestion de relance.
+
+-- Exemple volontairement non exécuté : décommentez et collez un vrai UUID.
+-- select public.seed_demo_for_profile('00000000-0000-0000-0000-000000000000');

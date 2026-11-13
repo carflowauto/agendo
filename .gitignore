@@ -1,3 +1,16 @@
+node_modules
+.next
+.open-next
+.wrangler
+.env
+.env.*
+!.env.example
+.dev.vars
+!.dev.vars.example
+*.log
+.DS_Store
 __pycache__/
 *.pyc
-.DS_Store
+cloudflare-env.d.ts
+tsconfig.tsbuildinfo
+.vercel
