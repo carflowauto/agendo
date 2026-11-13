@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendez-vous – Agendo Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+  colors: { brand: { 50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81' } }
+}}}
+</script>
+<style>
+  body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .grad{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)}
+  .grad-text{background:linear-gradient(135deg,#4f46e5,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hatch{background-image:repeating-linear-gradient(45deg,#f1f5f9 0,#f1f5f9 6px,#e2e8f0 6px,#e2e8f0 7px)}
+  .gstripe{background-image:repeating-linear-gradient(135deg,#f8fafc 0,#f8fafc 5px,#eef2f7 5px,#eef2f7 10px)}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col -translate-x-full lg:translate-x-0 transition-transform">
+  <div class="h-16 flex items-center px-5 border-b border-slate-100"><a href="index.html" class="flex items-center gap-2 shrink-0">
+  <span class="grad w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span class="text-xl font-extrabold tracking-tight text-slate-900">Agendo</span>
+</a></div>
+  <div class="px-4 pt-4">
+    <button class="w-full flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-left">
+      <span class="w-9 h-9 rounded-lg bg-gradient-to-br from-pink-400 to-brand-500 text-white font-bold text-sm flex items-center justify-center">SM</span>
+      <span class="flex-1 min-w-0"><span class="block text-sm font-semibold text-slate-900 truncate">Salon Marie</span><span class="block text-xs text-slate-500 truncate">Coiffure · Paris 11e</span></span>
+      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg>
+    </button>
+  </div>
+  <nav class="flex-1 px-4 py-4 space-y-1">
+<a href="planning.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></span>Planning</a>
+<a href="rendez-vous.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm bg-brand-50 text-brand-700 font-semibold"><span class="text-brand-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg></span>Rendez-vous<span class="ml-auto text-[11px] font-semibold bg-brand-600 text-white rounded-full px-2 py-0.5">3</span></a>
+<a href="prestations.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.848 8.25l1.536.887M7.848 8.25a3 3 0 11-5.196-3 3 3 0 015.196 3zm1.536.887a2.165 2.165 0 011.083 1.839c.005.351.054.695.14 1.024M9.384 9.137l2.077 1.199M7.848 15.75l1.536-.887m-1.536.887a3 3 0 11-5.196 3 3 3 0 015.196-3zm1.536-.887a2.165 2.165 0 001.083-1.838c.005-.352.054-.695.14-1.025m-1.223 2.863l2.077-1.199m0-3.328a4.323 4.323 0 012.068-1.379l5.325-1.628a4.5 4.5 0 012.48-.044l.803.215-7.794 4.5m-2.882-1.664A4.331 4.331 0 0010.607 12m3.736 0l7.794 4.5-.802.215a4.5 4.5 0 01-2.48-.043l-5.326-1.629a4.324 4.324 0 01-2.068-1.379M14.343 12l-2.882 1.664"/></svg></span>Prestations</a>
+<a href="clients.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></span>Clients</a>
+<a href="horaires.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>Horaires & congés</a>
+<a href="synchronisation.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg></span>Synchronisation<span class="ml-auto w-2 h-2 rounded-full bg-emerald-500" title="Synchronisé"></span></a>
+<a href="parametres.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"><span class="text-slate-400 group-hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>Paramètres</a>
+  </nav>
+  <div class="px-4 pb-4">
+    <a href="reservation.html" target="_blank" class="flex items-center gap-2 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg px-3 py-2.5 mb-3">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+      Voir ma page de réservation
+    </a>
+    <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+      <span class="w-9 h-9 rounded-full bg-amber-100 text-amber-700 font-semibold text-sm flex items-center justify-center">ML</span>
+      <span class="flex-1 min-w-0"><span class="block text-sm font-semibold text-slate-900">Marie Lefèvre</span><span class="block text-xs text-slate-500 truncate">Gérante · Offre Pro</span></span>
+      <a href="index.html" title="Se déconnecter" class="text-slate-400 hover:text-slate-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg></a>
+    </div>
+  </div>
+</aside>
+<div id="overlay" class="fixed inset-0 bg-slate-900/40 z-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
+<div class="lg:pl-64 min-h-screen flex flex-col">
+<header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="h-16 px-4 sm:px-8 flex items-center gap-4">
+    <button class="lg:hidden -ml-1 p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()" aria-label="Menu"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="min-w-0">
+      <h1 class="text-lg font-bold text-slate-900 leading-tight">Rendez-vous</h1>
+      <p class="text-xs text-slate-500 hidden sm:block">Tous les rendez-vous de l'établissement</p>
+    </div>
+    <div class="ml-auto flex items-center gap-2 sm:gap-3">
+      <div class="hidden md:flex items-center gap-2 bg-slate-100 rounded-lg px-3 h-9 w-56 text-sm text-slate-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input class="bg-transparent outline-none w-full placeholder:text-slate-400" placeholder="Rechercher un client…">
+      </div>
+      <button class="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Notifications">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
+      </button>
+      <button onclick="openModal('modal-rdv')" class="inline-flex items-center gap-1.5 grad text-white text-sm font-semibold rounded-lg px-3.5 h-9 shadow-sm hover:opacity-95"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="hidden sm:inline">Nouveau rendez-vous</span></button>
+    </div>
+  </div>
+</header><main class="flex-1 p-4 sm:p-8">
+<div class="flex flex-col lg:flex-row lg:items-center gap-3 mb-5">
+  <div class="inline-flex p-1 bg-slate-200/70 rounded-xl overflow-x-auto"><button data-f="Tous" class="ftab h-9 px-4 rounded-lg text-sm font-semibold bg-white text-slate-900 shadow-sm">Tous <span class="ml-1 text-xs text-slate-400">12</span></button><button data-f="À venir" class="ftab h-9 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900">À venir <span class="ml-1 text-xs text-slate-400">6</span></button><button data-f="Confirmé" class="ftab h-9 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900">Confirmé <span class="ml-1 text-xs text-slate-400">2</span></button><button data-f="Terminé" class="ftab h-9 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900">Terminé <span class="ml-1 text-xs text-slate-400">3</span></button><button data-f="Annulé" class="ftab h-9 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900">Annulé <span class="ml-1 text-xs text-slate-400">1</span></button></div>
+  <div class="lg:ml-auto flex flex-wrap gap-2">
+    <select class="h-9 rounded-lg border border-slate-300 bg-white text-sm px-2"><option>Cette semaine</option><option>Aujourd'hui</option><option>Ce mois-ci</option></select>
+    <select class="h-9 rounded-lg border border-slate-300 bg-white text-sm px-2"><option>Tous les collaborateurs</option><option>Marie</option><option>Julien</option><option>Sarah</option></select>
+    <button onclick="toast('Export CSV téléchargé')" class="inline-flex items-center gap-1.5 border border-slate-300 bg-white text-slate-700 text-sm font-semibold rounded-lg px-3.5 h-9 hover:bg-slate-50">Exporter (CSV)</button>
+  </div>
+</div>
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"><tr><th class="px-5 py-3">Date</th><th class="px-5 py-3">Client</th><th class="px-5 py-3">Prestation</th><th class="px-5 py-3">Avec</th><th class="px-5 py-3">Origine</th><th class="px-5 py-3">Statut</th><th class="px-5 py-3"></th></tr></thead><tbody id="tb" class="divide-y divide-slate-100"><tr class="hover:bg-slate-50" data-st="Terminé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">09:00</p><p class="text-xs text-slate-500">Mar. 17 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">CD</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Camille Durand</p><p class="text-xs text-slate-500 whitespace-nowrap">06 12 34 56 78</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe femme</p><p class="text-xs text-slate-500">45 min · 45 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-slate-100 text-slate-600">Terminé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="Terminé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">10:00</p><p class="text-xs text-slate-500">Mar. 17 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">LM</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Léa Martin</p><p class="text-xs text-slate-500 whitespace-nowrap">06 45 98 12 33</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Balayage</p><p class="text-xs text-slate-500">2 h 30 · 120 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-slate-100 text-slate-600">Terminé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="Terminé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">13:30</p><p class="text-xs text-slate-500">Mar. 17 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-sky-100 text-sky-700 text-xs font-bold flex items-center justify-center shrink-0">HB</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Hugo Bernard</p><p class="text-xs text-slate-500 whitespace-nowrap">07 81 22 40 19</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe homme</p><p class="text-xs text-slate-500">30 min · 25 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Julien</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Téléphone</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-slate-100 text-slate-600">Terminé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="Confirmé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">14:30</p><p class="text-xs text-slate-500">Mar. 17 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-sky-100 text-sky-700 text-xs font-bold flex items-center justify-center shrink-0">CP</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Chloé Petit</p><p class="text-xs text-slate-500 whitespace-nowrap">06 30 77 85 02</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe + brushing</p><p class="text-xs text-slate-500">1 h · 60 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-emerald-50 text-emerald-700">Confirmé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="Confirmé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">16:00</p><p class="text-xs text-slate-500">Mar. 17 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center shrink-0">NB</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Nadia Benali</p><p class="text-xs text-slate-500 whitespace-nowrap">06 72 14 63 90</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Couleur racines</p><p class="text-xs text-slate-500">1 h 15 · 65 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Sarah</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-emerald-50 text-emerald-700">Confirmé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">09:30</p><p class="text-xs text-slate-500">Mer. 18 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center shrink-0">TR</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Thomas Roux</p><p class="text-xs text-slate-500 whitespace-nowrap">06 11 52 08 47</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe homme</p><p class="text-xs text-slate-500">30 min · 25 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Julien</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">10:30</p><p class="text-xs text-slate-500">Mer. 18 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center shrink-0">IR</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Inès Robert</p><p class="text-xs text-slate-500 whitespace-nowrap">07 66 30 21 84</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Brushing</p><p class="text-xs text-slate-500">30 min · 30 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">11:00</p><p class="text-xs text-slate-500">Mer. 18 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center shrink-0">JM</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Julie Moreau</p><p class="text-xs text-slate-500 whitespace-nowrap">06 29 47 11 60</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Couleur complète</p><p class="text-xs text-slate-500">1 h 30 · 80 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Sarah</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Téléphone</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">14:00</p><p class="text-xs text-slate-500">Mer. 18 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">EL</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Emma Laurent</p><p class="text-xs text-slate-500 whitespace-nowrap">06 83 05 96 21</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Lissage brésilien</p><p class="text-xs text-slate-500">3 h · 180 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="Annulé"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">16:00</p><p class="text-xs text-slate-500">Mer. 18 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-pink-100 text-pink-700 text-xs font-bold flex items-center justify-center shrink-0">AL</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Antoine Lucas</p><p class="text-xs text-slate-500 whitespace-nowrap">06 54 18 72 39</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe homme</p><p class="text-xs text-slate-500">30 min · 25 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Julien</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-rose-50 text-rose-700">Annulé</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">09:00</p><p class="text-xs text-slate-500">Jeu. 19 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center shrink-0">SF</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Sophie Fournier</p><p class="text-xs text-slate-500 whitespace-nowrap">06 92 61 44 07</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Mèches</p><p class="text-xs text-slate-500">2 h · 95 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Sarah</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr><tr class="hover:bg-slate-50" data-st="À venir"><td class="px-5 py-3 whitespace-nowrap"><p class="font-semibold text-slate-900">11:30</p><p class="text-xs text-slate-500">Jeu. 19 nov.</p></td>
+    <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-pink-100 text-pink-700 text-xs font-bold flex items-center justify-center shrink-0">ML</span><div><p class="font-semibold text-slate-900 whitespace-nowrap">Manon Lambert</p><p class="text-xs text-slate-500 whitespace-nowrap">07 58 34 90 16</p></div></div></td>
+    <td class="px-5 py-3"><p class="text-slate-900 whitespace-nowrap">Coupe femme</p><p class="text-xs text-slate-500">45 min · 45 €</p></td>
+    <td class="px-5 py-3 text-slate-700">Marie</td><td class="px-5 py-3"><span class="inline-flex items-center gap-1 text-xs text-slate-500"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>En ligne</span></td>
+    <td class="px-5 py-3"><span class="inline-flex text-xs font-semibold rounded-full px-2.5 py-1 whitespace-nowrap bg-brand-50 text-brand-700">À venir</span></td>
+    <td class="px-5 py-3 text-right"><button class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500" aria-label="Actions">•••</button></td></tr></tbody></table></div>
+<div class="flex items-center justify-between px-5 py-3 border-t border-slate-100 text-sm text-slate-500"><span>12 rendez-vous sur 38 cette semaine</span><div class="flex gap-1"><button class="h-8 px-3 rounded-lg border border-slate-200 text-slate-400">Précédent</button><button class="h-8 px-3 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">Suivant</button></div></div></div>
+<script>
+document.querySelectorAll('.ftab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ftab').forEach(x=>x.className='ftab h-9 px-4 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900');b.className='ftab h-9 px-4 rounded-lg text-sm font-semibold bg-white text-slate-900 shadow-sm';const f=b.dataset.f;document.querySelectorAll('#tb tr').forEach(r=>r.style.display=(f==='Tous'||r.dataset.st===f)?'':'none');});
+</script></main></div>
+<div id="modal-rdv" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50" onclick="if(event.target===this)closeModal('modal-rdv')">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100"><h3 class="font-bold text-slate-900">Nouveau rendez-vous</h3><button onclick="closeModal('modal-rdv')" class="text-slate-400 hover:text-slate-700 text-2xl leading-none">&times;</button></div>
+    <div class="p-6 space-y-4">
+      <label class="block"><span class="text-sm font-medium text-slate-700">Client</span><input class="mt-1 w-full rounded-lg border border-slate-300 px-3 h-10 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Nom, téléphone ou e-mail" value="Camille Durand"></label>
+      <label class="block"><span class="text-sm font-medium text-slate-700">Prestation</span><select class="mt-1 w-full rounded-lg border border-slate-300 px-3 h-10 text-sm bg-white"><option>Coupe femme – 45 min – 45 €</option><option>Coupe homme – 30 min – 25 €</option><option>Brushing – 30 min – 30 €</option><option>Couleur racines – 1 h 15 – 65 €</option><option>Balayage – 2 h 30 – 120 €</option></select></label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block"><span class="text-sm font-medium text-slate-700">Date</span><input type="text" value="Mar. 17/11/2026" class="mt-1 w-full rounded-lg border border-slate-300 px-3 h-10 text-sm"></label>
+        <label class="block"><span class="text-sm font-medium text-slate-700">Heure</span><input type="text" value="14:30" class="mt-1 w-full rounded-lg border border-slate-300 px-3 h-10 text-sm"></label>
+      </div>
+      <label class="block"><span class="text-sm font-medium text-slate-700">Note interne</span><textarea rows="2" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Ex. : allergie, préférence…"></textarea></label>
+      <label class="flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" checked class="rounded text-brand-600"> Envoyer une confirmation par e-mail au client</label>
+    </div>
+    <div class="flex justify-end gap-2 px-6 py-4 bg-slate-50 rounded-b-2xl"><button onclick="closeModal('modal-rdv')" class="px-4 h-10 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-200">Annuler</button><button onclick="closeModal('modal-rdv');toast('Rendez-vous créé et ajouté à Google Agenda')" class="px-4 h-10 rounded-lg text-sm font-semibold text-white grad">Créer le rendez-vous</button></div>
+  </div>
+</div>
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden items-center gap-2 bg-slate-900 text-white text-sm font-medium rounded-xl px-4 py-3 shadow-lg"><svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span id="toast-msg"></span></div>
+
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('-translate-x-full');document.getElementById('overlay').classList.toggle('hidden');}
+function openModal(id){const m=document.getElementById(id);m.classList.remove('hidden');m.classList.add('flex');}
+function closeModal(id){const m=document.getElementById(id);m.classList.add('hidden');m.classList.remove('flex');}
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.remove('hidden');t.classList.add('flex');clearTimeout(window._tt);window._tt=setTimeout(()=>{t.classList.add('hidden');t.classList.remove('flex')},2600);}
+</script>
+</body></html>
