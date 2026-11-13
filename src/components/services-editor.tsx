@@ -16,8 +16,8 @@ export function ServicesEditor({ services }: { services: Service[] }) {
           <form key={service.id} action={saveService} className="border-b border-slate-100 px-3 py-3 last:border-0">
             <input type="hidden" name="retour" value={back} />
             <input type="hidden" name="id" value={service.id} />
-            <input type="hidden" name="description" value={service.description ?? ""} />
             <p className="text-sm font-semibold text-slate-900">{service.name}</p>
+            <input name="description" defaultValue={service.description ?? ""} placeholder="Description, facultative" className="mt-1 h-9 w-full rounded-xl bg-white px-2 text-sm text-slate-600" />
             <input type="hidden" name="name" value={service.name} />
             <div className="mt-2 grid grid-cols-[1fr_1fr_auto] gap-2">
               <label className="min-w-0 text-xs text-slate-500">Minutes
@@ -57,6 +57,7 @@ export function ServicesEditor({ services }: { services: Service[] }) {
         <form action={saveService} className="mt-3 space-y-2">
           <input type="hidden" name="retour" value={back} />
           <input name="name" required placeholder="Nom" className="h-11 w-full rounded-2xl bg-white px-3 text-base" />
+          <input name="description" placeholder="Description, facultative" className="h-11 w-full rounded-2xl bg-white px-3 text-base" />
           <div className="grid grid-cols-2 gap-2">
             <input name="duration_min" defaultValue="60" aria-label="Minutes" className="h-11 rounded-2xl bg-white px-3 text-base" />
             <input name="price" defaultValue="40" aria-label="Prix en euros" className="h-11 rounded-2xl bg-white px-3 text-base" />

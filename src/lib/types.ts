@@ -96,6 +96,14 @@ export type PublicHour = {
   is_closed: boolean;
 };
 
+export type PublicReview = {
+  id: string;
+  author_name: string;
+  rating: number;
+  body: string | null;
+  created_at: string;
+};
+
 export type BookingContext = {
   full_name: string;
   profession: string;
@@ -106,6 +114,9 @@ export type BookingContext = {
   bio: string | null;
   min_notice_minutes: number;
   timezone: string;
+  review_count?: number;
+  rating_avg?: number | null;
+  reviews?: PublicReview[];
   services: PublicService[];
   hours: PublicHour[];
   photos: { url: string; caption: string | null }[];
