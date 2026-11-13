@@ -1,9 +1,10 @@
 import { CopyButton } from "@/components/copy-button";
 import { OfferSettings } from "@/components/offer-settings";
 import { PasswordForm } from "@/components/auth-forms";
-import { Flash, PageHeader, cardClass, fieldClass, labelClass } from "@/components/ui";
+import { ProColumn } from "@/components/pro-shell";
+import { Flash, cardClass, fieldClass, labelClass } from "@/components/ui";
 import { requestOrigin } from "@/lib/origin";
-import { addTimeOff, deleteTimeOff, loadDemo, saveSettings } from "@/server/actions";
+import { addTimeOff, deleteTimeOff, loadDemo, saveProfile, saveSettings, signOut } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
 import type { OpeningHour, Service } from "@/lib/types";
 
@@ -35,9 +36,29 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   const googleRow = google as GoogleRow | null;
 
   return (
-    <div className="space-y-6 max-w-3xl">
-      <PageHeader title="Réglages" subtitle="Prestations, horaires, congés et rappels" />
-      <Flash ok={params.ok} erreur={params.erreur} />
+    <ProColumn
+      header={
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Réglages</h1>
+          <p className="text-sm text-slate-500">Prestations, horaires, fiche et synchro</p>
+          <Flash ok={params.ok} erreur={params.erreur} />
+        </div>
+      }
+    >
+      <div className="space-y-4">
+      <form action={saveProfile} className={`${cardClass} space-y-2 p-4`}>
+        <input type="hidden" name="retour" value="/espace/reglages" />
+        <h2 className="font-bold">Ma fiche</h2>
+        <label className={labelClass}>Enseigne<input name="full_name" required defaultValue={profile.full_name} className={fieldClass} /></label>
+        <label className={labelClass}>Métier<input name="profession" required defaultValue={profile.profession} className={fieldClass} /></label>
+        <label className={labelClass}>Ville<input name="city" defaultValue={profile.city} className={fieldClass} /></label>
+        <label className={labelClass}>Téléphone<input name="phone" defaultValue={profile.phone} className={fieldClass} /></label>
+        <label className={labelClass}>Adresse<input name="address" defaultValue={profile.address ?? ""} className={fieldClass} /></label>
+        <label className={labelClass}>Texte<textarea name="bio" rows={2} defaultValue={profile.bio ?? ""} className="mt-1 w-full rounded-2xl border border-white/80 bg-white px-3 py-2 text-sm" /></label>
+        <label className={labelClass}>Adresse de la page<input name="slug" required defaultValue={profile.slug} className={fieldClass} /></label>
+        <button className="h-11 w-full rounded-2xl grad text-sm font-semibold text-white">Enregistrer la fiche</button>
+      </form>
+
       <OfferSettings services={(serviceRows ?? []) as Service[]} hours={(hourRows ?? []) as OpeningHour[]} />
 
       <form action={saveSettings} className={`${cardClass} p-5 grid sm:grid-cols-3 gap-3`}>
@@ -71,11 +92,14 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         </form>
       </section>
 
-      <section className={`${cardClass} p-5`}>
-        <h2 className="font-bold">Calendrier iPhone (iCal)</h2>
-        <p className="mt-1 text-sm text-slate-500">Abonnez-vous une fois : les rendez-vous se mettent à jour. Ne partagez pas ce lien, il contient vos noms de clientes.</p>
-        <p className="mt-3 text-sm break-all font-mono bg-slate-50 rounded-lg px-3 py-2">{webcal}</p>
-        <div className="mt-3"><CopyButton value={ical} label="Copier le lien https" /></div>
+      <section id="synchro" className={`${cardClass} p-4`}>
+        <h2 className="font-bold">Synchronisation</h2>
+        <p className="mt-1 text-sm text-slate-500">Google Agenda est préparé, pas encore activé. Statut : {googleRow?.status ?? "not_connected"}.</p>
+        {googleRow?.last_error ? <p className="mt-2 text-sm text-rose-700">{googleRow.last_error}</p> : null}
+        <a href="/api/google/connect" className="mt-3 inline-flex h-11 items-center rounded-2xl bg-white px-4 text-sm font-semibold">Préparer Google Agenda</a>
+        <p className="mt-4 text-sm font-semibold text-slate-900">Calendrier iPhone</p>
+        <p className="mt-1 break-all rounded-2xl bg-white px-3 py-2 text-xs">{webcal}</p>
+        <div className="mt-2"><CopyButton value={ical} label="Copier le lien iCal" /></div>
       </section>
 
       <section className={`${cardClass} p-5`}>
@@ -86,16 +110,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <p className="mt-3 text-sm">En attente : {counts.pending} · Ignorés : {counts.skipped} · Envoyés : {counts.sent}</p>
       </section>
 
-      <section className={`${cardClass} p-5`}>
-        <h2 className="font-bold">Google Agenda</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Statut : {googleRow?.status ?? "not_connected"}. La table et les routes OAuth sont prêtes, la connexion n’est pas activée dans cette version.
-        </p>
-        {googleRow?.last_error ? <p className="mt-2 text-sm text-rose-700">{googleRow.last_error}</p> : null}
-        <a href="/api/google/connect" className="mt-3 inline-flex h-10 px-4 items-center rounded-xl border border-slate-300 text-sm font-semibold">Préparer la connexion</a>
-      </section>
-
-      <section className={`${cardClass} p-5`}>
+      <section className={`${cardClass} p-4`}>
         <h2 className="font-bold">Mot de passe</h2>
         <div className="mt-3"><PasswordForm /></div>
       </section>
@@ -103,8 +118,13 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
       <form action={loadDemo} className={`${cardClass} p-5`}>
         <h2 className="font-bold">Données de démonstration</h2>
         <p className="mt-1 text-sm text-slate-500">Ajoute une journée type (pose, pause, remplissage, dépose) et une relance de remplissage. Les fiches marquées démo sont remplacées.</p>
-        <button className="mt-3 h-10 px-4 rounded-xl border border-slate-300 text-sm font-semibold">Charger un exemple</button>
+        <button className="mt-3 h-11 rounded-2xl bg-white px-4 text-sm font-semibold">Charger un exemple</button>
       </form>
-    </div>
+
+      <form action={signOut}>
+        <button className="h-11 w-full rounded-2xl text-sm font-semibold text-rose-700">Se déconnecter</button>
+      </form>
+      </div>
+    </ProColumn>
   );
 }

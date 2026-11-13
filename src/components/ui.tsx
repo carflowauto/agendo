@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 
 export const fieldClass =
-  "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 h-10 text-sm outline-none focus:ring-2 focus:ring-brand-500";
+  "mt-1 w-full rounded-2xl border border-white/80 bg-white px-3.5 h-11 text-base text-slate-900 outline-none shadow-sm focus:ring-2 focus:ring-brand-400";
 export const labelClass = "block text-sm font-medium text-slate-700";
 export const btnPrimary =
-  "inline-flex items-center justify-center gap-2 rounded-xl grad px-4 h-10 text-sm font-semibold text-white shadow-sm hover:opacity-95 disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-2xl grad px-4 h-11 text-sm font-semibold text-white shadow-md shadow-brand-500/20 hover:opacity-95 disabled:opacity-40";
 export const btnSecondary =
-  "inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 h-10 text-sm font-semibold text-slate-700 hover:bg-slate-50";
-export const cardClass = "bg-white rounded-2xl border border-slate-200";
+  "inline-flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/80 px-4 h-11 text-sm font-semibold text-slate-700 hover:bg-white";
+export const cardClass = "bg-white/80 backdrop-blur rounded-[24px] border border-white/80 shadow-sm";
 
 export function Logo({ href = "/", compact = false }: { href?: string; compact?: boolean }) {
   return (
