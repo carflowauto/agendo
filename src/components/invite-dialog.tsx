@@ -20,7 +20,7 @@ export function InviteDialog({ services, className = "" }: { services: { id: str
 
   return (
     <>
-      <button type="button" className={`${btnPrimary} ${className}`} onClick={() => { setOpen(true); setUrl(null); setError(null); }}>
+      <button type="button" className={className || btnPrimary} onClick={() => { setOpen(true); setUrl(null); setError(null); }}>
         Inviter une cliente
       </button>
       {open ? (

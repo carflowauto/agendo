@@ -130,6 +130,7 @@ export async function createAppointment(formData: FormData) {
   const time = String(formData.get("time") ?? "");
   const notes = String(formData.get("notes") ?? "").trim();
   if (!isDateKey(date) || !/^\d{2}:\d{2}/.test(time)) go("/espace/agenda", "Date ou heure invalide.");
+  const back = `/espace/agenda?jour=${date}`;
   if (!phone.trim()) {
     const { data: named } = await supabase
       .from("clients")
@@ -144,7 +145,8 @@ export async function createAppointment(formData: FormData) {
     .eq("id", serviceId)
     .eq("profile_id", profile.id)
     .maybeSingle();
-  if (serviceError || !service) go("/espace/agenda", "Prestation introuvable.");
+  if (serviceError || !service) redirect(`${back}&erreur=${encodeURIComponent("Prestation introuvable.")}`);
+  let failure: string | null = null;
   try {
     const clientId = await findOrCreateClient(supabase, profile.id, name, phone);
     const start = zonedWallTimeToUtc(date, time.slice(0, 5), profile.timezone);
@@ -164,14 +166,15 @@ export async function createAppointment(formData: FormData) {
       duration_min: service.duration_min,
       price_cents: service.price_cents,
     });
-    if (error) go("/espace/agenda", dbError(error));
+    if (error) failure = dbError(error);
   } catch (error) {
-    go("/espace/agenda", error instanceof Error ? error.message : "Impossible de créer le rendez-vous.");
+    failure = error instanceof Error ? error.message : "Impossible de créer le rendez-vous.";
   }
+  if (failure) redirect(`${back}&erreur=${encodeURIComponent(failure)}`);
   revalidatePath("/espace/agenda");
   revalidatePath("/espace/aujourdhui");
   revalidatePath("/espace/clientes");
-  redirect("/espace/agenda?ok=Rendez-vous%20ajout%C3%A9");
+  redirect(`${back}&ok=${encodeURIComponent("Rendez-vous ajouté")}`);
 }
 
 export async function createBlock(formData: FormData) {
@@ -183,9 +186,10 @@ export async function createBlock(formData: FormData) {
   if (!isDateKey(date) || !/^\d{2}:\d{2}/.test(startTime) || !/^\d{2}:\d{2}/.test(endTime)) {
     go("/espace/agenda", "Créneau invalide.");
   }
+  const back = `/espace/agenda?jour=${date}`;
   const start = zonedWallTimeToUtc(date, startTime.slice(0, 5), profile.timezone);
   const end = zonedWallTimeToUtc(date, endTime.slice(0, 5), profile.timezone);
-  if (end <= start) go("/espace/agenda", "L'heure de fin doit être après le début.");
+  if (end <= start) redirect(`${back}&erreur=${encodeURIComponent("L'heure de fin doit être après le début.")}`);
   const { error } = await supabase.from("appointments").insert({
     profile_id: profile.id,
     starts_at: start.toISOString(),
@@ -197,10 +201,10 @@ export async function createBlock(formData: FormData) {
     duration_min: Math.round((end.getTime() - start.getTime()) / 60_000),
     price_cents: 0,
   });
-  if (error) go("/espace/agenda", dbError(error));
+  if (error) redirect(`${back}&erreur=${encodeURIComponent(dbError(error))}`);
   revalidatePath("/espace/agenda");
   revalidatePath("/espace/aujourdhui");
-  redirect("/espace/agenda?ok=Cr%C3%A9neau%20bloqu%C3%A9");
+  redirect(`${back}&ok=${encodeURIComponent("Créneau bloqué")}`);
 }
 
 export async function createInvitation(serviceId: string, slotsLocal: string[]) {

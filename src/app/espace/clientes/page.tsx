@@ -6,7 +6,7 @@ import { saveClient } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
 import type { ClientRow } from "@/lib/types";
 
-export const metadata = { title: "Clientes" };
+export const metadata = { title: "Clients" };
 
 export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string; ok?: string; erreur?: string }> }) {
   const params = await searchParams;
@@ -21,7 +21,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     <ProColumn
       header={
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Clientes</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Clients</h1>
           <p className="text-sm text-slate-500">{clients.length} fiche{clients.length > 1 ? "s" : ""}</p>
           <Flash ok={params.ok} erreur={params.erreur} />
         </div>

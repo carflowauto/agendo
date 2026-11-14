@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { confirmedCount, dayRevenue, nextAppointment } from "./today";
+import { confirmedCount, dayRevenue, freeGaps, nextAppointment } from "./today";
 
 const now = new Date("2026-11-13T10:00:00.000Z");
 
@@ -25,4 +25,17 @@ test("le compte et le chiffre d'affaires ignorent les pauses", () => {
   ];
   assert.equal(confirmedCount(items), 1);
   assert.equal(dayRevenue(items), 6500);
+});
+
+test("les créneaux libres ignorent le passé et les rendez-vous", () => {
+  const gaps = freeGaps({
+    open: "2026-11-13T08:00:00.000Z",
+    close: "2026-11-13T16:00:00.000Z",
+    now: now,
+    busy: [{ starts_at: "2026-11-13T12:00:00.000Z", ends_at: "2026-11-13T13:00:00.000Z" }],
+  });
+  assert.deepEqual(gaps, [
+    { starts_at: "2026-11-13T10:00:00.000Z", ends_at: "2026-11-13T12:00:00.000Z" },
+    { starts_at: "2026-11-13T13:00:00.000Z", ends_at: "2026-11-13T16:00:00.000Z" },
+  ]);
 });
