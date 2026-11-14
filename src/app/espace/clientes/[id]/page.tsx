@@ -41,7 +41,7 @@ export default async function ClientPage({
     <ProColumn
       header={
         <div>
-          <Link href="/espace/clientes" className="text-sm font-semibold text-brand-700">‹ Clientes</Link>
+          <Link href="/espace/clientes" className="text-sm font-semibold text-brand-700">‹ Clients</Link>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">{row.full_name}</h1>
           <p className="text-sm text-slate-500">{formatPhone(row.phone)}</p>
           <Flash ok={query.ok} erreur={query.erreur} />

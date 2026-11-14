@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { VitrineBar } from "@/components/vitrine-bar";
 
 const TABS = [
   { href: "/espace/aujourdhui", label: "Aujourd'hui", icon: "today" },
   { href: "/espace/agenda", label: "Agenda", icon: "agenda" },
-  { href: "/espace/clientes", label: "Clientes", icon: "people" },
+  { href: "/espace/clientes", label: "Clients", icon: "people" },
   { href: "/espace/reglages", label: "Réglages", icon: "gear" },
 ] as const;
 
@@ -45,14 +46,17 @@ function TabIcon({ name }: { name: (typeof TABS)[number]["icon"] }) {
   );
 }
 
-export function ProShell({ activePath, children }: { profile?: { full_name: string }; email?: string; needsSetup?: boolean; activePath?: string; children: ReactNode }) {
+export function ProShell({ activePath, slug, children }: { profile?: { full_name: string }; email?: string; needsSetup?: boolean; activePath?: string; slug?: string | null; children: ReactNode }) {
   const pathname = usePathname();
   const current = activePath ?? pathname;
   const active = (href: string) => current === href || current.startsWith(`${href}/`);
+  const wide = current.startsWith("/espace/agenda");
+  const home = current === "/espace/aujourdhui" || current === "/espace";
 
   return (
     <div className="h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_#fde7f3_0%,_#eef2ff_38%,_#f8fafc_100%)] text-slate-800">
-      <div className="mx-auto flex h-full w-full max-w-md flex-col">
+      <div className={`mx-auto flex h-full w-full flex-col ${wide ? "max-w-md lg:max-w-4xl" : "max-w-md"}`}>
+        {home ? null : <VitrineBar slug={slug} />}
         <div className="min-h-0 flex-1">{children}</div>
         <nav className="shrink-0 grid h-[4.25rem] grid-cols-4 border-t border-white/70 bg-white/85 px-1 backdrop-blur" aria-label="Espace pro">
           {TABS.map((tab) => {
