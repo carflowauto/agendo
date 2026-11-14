@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Calendar, Home, Settings, Users } from "lucide-react";
 import { initials } from "@/lib/phone";
+import { SheensyLogo } from "@/components/sheensy-logo";
 
 function mark(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -38,7 +39,7 @@ export function ProShell({ activePath, fullName = "", children }: { profile?: { 
       <div className="mx-auto flex h-full w-full max-w-md flex-col">
         <header className="flex shrink-0 items-start justify-between gap-3 bg-white px-4 pb-2 pt-3">
           <div className="min-w-0">
-            <p className="text-[28px] font-extrabold leading-none tracking-tight text-[#D9577A]">Sheensy</p>
+            <SheensyLogo href="/espace/aujourdhui" />
             {name ? <p className="mt-1 truncate text-[22px] font-bold leading-tight">Bonjour {name}</p> : null}
           </div>
           <span className="relative mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F6D5E1] text-[13px] font-bold ring-2 ring-white">

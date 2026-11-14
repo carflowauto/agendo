@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SheensyLogo } from "@/components/sheensy-logo";
 
 export const fieldClass =
   "mt-1 w-full rounded-2xl border border-white/80 bg-white px-3.5 h-11 text-base text-slate-900 outline-none shadow-sm focus:ring-2 focus:ring-brand-400";
@@ -10,18 +11,7 @@ export const btnSecondary =
 export const cardClass = "bg-white/80 backdrop-blur rounded-[24px] border border-white/80 shadow-sm";
 
 export function Logo({ href = "/", compact = false }: { href?: string; compact?: boolean }) {
-  return (
-    <a href={href} className="flex items-center gap-2 shrink-0">
-      <span className={`grad ${compact ? "w-7 h-7" : "w-8 h-8"} rounded-lg flex items-center justify-center text-white shadow-sm`}>
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-          <rect x="3.5" y="5" width="17" height="15" rx="3" />
-          <path d="M3.5 10h17M8 3v4M16 3v4" />
-          <path d="M9 15l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </span>
-      <span className={`${compact ? "text-lg" : "text-xl"} font-extrabold tracking-tight text-slate-900`}>Sheensy</span>
-    </a>
-  );
+  return <SheensyLogo href={href} size={compact ? "sm" : "md"} />;
 }
 
 export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: ReactNode }) {

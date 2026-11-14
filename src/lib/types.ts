@@ -146,6 +146,8 @@ export const RESERVED_SLUGS = new Set([
   "api",
   "maquette",
   "mot-de-passe-oublie",
+  "pro",
+  "recherche",
   "favicon",
   "favicon.ico",
 ]);
