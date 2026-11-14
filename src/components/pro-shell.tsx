@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { VitrineBar } from "@/components/vitrine-bar";
+import { Calendar, Home, Settings, Users } from "lucide-react";
+import { initials } from "@/lib/phone";
+
+function mark(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return initials(name);
+  return (parts[0] || "S").slice(0, 2).toUpperCase();
+}
 
 const TABS = [
   { href: "/espace/aujourdhui", label: "Aujourd'hui", icon: "today" },
@@ -12,58 +19,40 @@ const TABS = [
   { href: "/espace/reglages", label: "Réglages", icon: "gear" },
 ] as const;
 
-function TabIcon({ name }: { name: (typeof TABS)[number]["icon"] }) {
-  const common = "w-5 h-5";
-  if (name === "today") {
-    return (
-      <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="4" />
-        <path strokeLinecap="round" d="M12 3v2M12 19v2M3 12h2M19 12h2" />
-      </svg>
-    );
-  }
-  if (name === "agenda") {
-    return (
-      <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-        <rect x="4" y="5" width="16" height="15" rx="2" />
-        <path strokeLinecap="round" d="M8 3v4M16 3v4M4 10h16" />
-      </svg>
-    );
-  }
-  if (name === "people") {
-    return (
-      <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-        <circle cx="9" cy="9" r="3" />
-        <path strokeLinecap="round" d="M4 19c.6-2.6 2.6-4 5-4s4.4 1.4 5 4M17 11a2.5 2.5 0 100-5M18 19c.3-1.6 1.2-2.8 2.5-3.4" />
-      </svg>
-    );
-  }
-  return (
-    <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="3" />
-      <path strokeLinecap="round" d="M12 3.5v2.2M12 18.3V20.5M3.5 12h2.2M18.3 12H20.5M6 6l1.6 1.6M16.4 16.4L18 18M18 6l-1.6 1.6M7.6 16.4L6 18" />
-    </svg>
-  );
+function TabIcon({ name, on }: { name: (typeof TABS)[number]["icon"]; on: boolean }) {
+  const props = { className: "h-[22px] w-[22px]", strokeWidth: 1.9, fill: on && name === "today" ? "currentColor" : "none" };
+  if (name === "today") return <Home {...props} />;
+  if (name === "agenda") return <Calendar {...props} />;
+  if (name === "people") return <Users {...props} />;
+  return <Settings {...props} />;
 }
 
-export function ProShell({ activePath, slug, children }: { profile?: { full_name: string }; email?: string; needsSetup?: boolean; activePath?: string; slug?: string | null; children: ReactNode }) {
+export function ProShell({ activePath, fullName = "", children }: { profile?: { full_name: string }; email?: string; needsSetup?: boolean; activePath?: string; slug?: string | null; fullName?: string; children: ReactNode }) {
   const pathname = usePathname();
   const current = activePath ?? pathname;
   const active = (href: string) => current === href || current.startsWith(`${href}/`);
-  const wide = current.startsWith("/espace/agenda");
-  const home = current === "/espace/aujourdhui" || current === "/espace";
+  const name = fullName.trim();
 
   return (
-    <div className="h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_#fde7f3_0%,_#eef2ff_38%,_#f8fafc_100%)] text-slate-800">
-      <div className={`mx-auto flex h-full w-full flex-col ${wide ? "max-w-md lg:max-w-4xl" : "max-w-md"}`}>
-        {home ? null : <VitrineBar slug={slug} />}
+    <div className="h-dvh overflow-hidden bg-white text-[#4A1238]">
+      <div className="mx-auto flex h-full w-full max-w-md flex-col">
+        <header className="flex shrink-0 items-start justify-between gap-3 bg-white px-4 pb-2 pt-3">
+          <div className="min-w-0">
+            <p className="text-[28px] font-extrabold leading-none tracking-tight text-[#D9577A]">Sheensy</p>
+            {name ? <p className="mt-1 truncate text-[22px] font-bold leading-tight">Bonjour {name}</p> : null}
+          </div>
+          <span className="relative mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F6D5E1] text-[13px] font-bold ring-2 ring-white">
+            {mark(name || "S")}
+            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#3DDC84] ring-2 ring-white" />
+          </span>
+        </header>
         <div className="min-h-0 flex-1">{children}</div>
-        <nav className="shrink-0 grid h-[4.25rem] grid-cols-4 border-t border-white/70 bg-white/85 px-1 backdrop-blur" aria-label="Espace pro">
+        <nav className="grid h-16 shrink-0 grid-cols-4 bg-white shadow-[0_-6px_18px_rgba(74,18,56,0.04)]" aria-label="Espace pro">
           {TABS.map((tab) => {
             const on = active(tab.href);
             return (
-              <Link key={tab.href} href={tab.href} className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold ${on ? "text-brand-700" : "text-slate-500"}`}>
-                <TabIcon name={tab.icon} />
+              <Link key={tab.href} href={tab.href} className={`flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${on ? "text-[#D9577A]" : "text-[#C4B4BC]"}`}>
+                <TabIcon name={tab.icon} on={on} />
                 {tab.label}
               </Link>
             );

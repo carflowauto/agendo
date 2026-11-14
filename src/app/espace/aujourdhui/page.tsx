@@ -1,20 +1,14 @@
-import Link from "next/link";
-import { InviteDialog } from "@/components/invite-dialog";
-import { VitrineBar } from "@/components/vitrine-bar";
-import { Flash } from "@/components/ui";
-import { addDays, formatDayLong, formatDuration, formatTime, parisDateKey, zonedWallTimeToUtc } from "@/lib/dates";
-import { formatEuro } from "@/lib/money";
-import { firstName, initials, smsHref, telHref, waHref } from "@/lib/phone";
+import { TodayDashboard, type TodayRow } from "@/components/today-dashboard";
+import { addDays, formatDayLong, formatTime, parisDateKey, zonedWallTimeToUtc } from "@/lib/dates";
+import { firstName, smsHref, waHref } from "@/lib/phone";
 import { hourForDate } from "@/lib/slots";
-import { vitrineUrl } from "@/lib/storefront";
+import { mapsSearchUrl, vitrineUrl } from "@/lib/storefront";
 import { confirmedCount, dayRevenue, freeGaps, nextAppointment, type FreeGap } from "@/lib/today";
-import { cancelAppointment, loadDemo } from "@/server/actions";
+import { loadDemo } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
-import type { Appointment, OpeningHour, Service } from "@/lib/types";
+import type { Appointment, OpeningHour } from "@/lib/types";
 
 export const metadata = { title: "Aujourd'hui" };
-
-const plum = "text-[#4a1942]";
 
 export default async function TodayPage({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
   const params = await searchParams;
@@ -22,105 +16,109 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
   const today = parisDateKey();
   const zone = profile.timezone || "Europe/Paris";
   const start = zonedWallTimeToUtc(today, "00:00", zone);
+  const yesterday = addDays(today, -1);
+  const yStart = zonedWallTimeToUtc(yesterday, "00:00", zone);
   const end = zonedWallTimeToUtc(addDays(today, 1), "00:00", zone);
-  const [{ data: rows }, { data: serviceRows }, { data: hourRows }, { data: offRows }, { data: pastRows }, { data: futureRows }] = await Promise.all([
+  const [{ data: rows }, { data: yRows }, { data: serviceRows }, { data: hourRows }, { data: offRows }, { data: pastRows }, { data: futureRows }] = await Promise.all([
     supabase.from("appointments").select("*").eq("profile_id", profile.id).neq("status", "cancelled").gte("starts_at", start.toISOString()).lt("starts_at", end.toISOString()).order("starts_at"),
-    supabase.from("services").select("id, name").eq("profile_id", profile.id).eq("active", true).order("sort_order"),
+    supabase.from("appointments").select("status, price_cents").eq("profile_id", profile.id).gte("starts_at", yStart.toISOString()).lt("starts_at", start.toISOString()),
+    supabase.from("services").select("id").eq("profile_id", profile.id).eq("active", true),
     supabase.from("opening_hours").select("*").eq("profile_id", profile.id),
     supabase.from("time_off").select("starts_on, ends_on").eq("profile_id", profile.id),
     supabase.from("appointments").select("*").eq("profile_id", profile.id).eq("status", "confirmed").gte("starts_at", zonedWallTimeToUtc(addDays(addDays(today, -profile.refill_weeks * 7), -1), "00:00", zone).toISOString()).lt("starts_at", zonedWallTimeToUtc(addDays(addDays(today, -profile.refill_weeks * 7), 2), "00:00", zone).toISOString()),
     supabase.from("appointments").select("client_id").eq("profile_id", profile.id).eq("status", "confirmed").gte("starts_at", new Date().toISOString()),
   ]);
   const appointments = (rows ?? []) as Appointment[];
-  const services = (serviceRows ?? []) as Pick<Service, "id" | "name">[];
   const hours = (hourRows ?? []) as OpeningHour[];
   const timeOff = (offRows ?? []) as { starts_on: string; ends_on: string }[];
   const hour = hourForDate(hours, today);
   const off = timeOff.some((item) => today >= item.starts_on && today <= item.ends_on);
   const gaps = freeToday(today, zone, hour, off, appointments);
-  const needsSetup = services.length === 0 || hours.length === 0;
   const next = nextAppointment(appointments);
+  const revenue = dayRevenue(appointments);
+  const previous = dayRevenue((yRows ?? []) as { status: string; price_cents: number | null }[]);
   const futureClients = new Set((futureRows ?? []).map((row) => row.client_id).filter(Boolean));
   const refills = ((pastRows ?? []) as Appointment[]).filter((item) => item.client_id && item.client_phone && !futureClients.has(item.client_id));
   const pageUrl = vitrineUrl(profile.slug);
-  const count = confirmedCount(appointments);
-  const revenue = dayRevenue(appointments);
-  const stats = [
-    { label: "RDV", value: String(count) },
-    { label: "Chiffre", value: formatEuro(revenue) },
-    ...(gaps ? [{ label: "Libres", value: String(gaps.length) }] : []),
-  ];
-  const programme = programmeRows(appointments, gaps ?? []);
+  const maps = mapsSearchUrl(profile.address, profile.city);
+  const rowsView = programmeRows(appointments, gaps ?? [], next?.id ?? null);
 
   return (
-    <div className={`relative flex h-full min-h-0 flex-col bg-white ${plum}`}>
-      <header className="shrink-0 px-4 pb-3 pt-4">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-xl font-extrabold tracking-tight">Sheensy</p>
-            <h1 className="mt-1 truncate text-lg font-bold">Bonjour {profile.full_name}</h1>
-            <p className="text-sm text-rose-400">{formatDayLong(today)}</p>
-          </div>
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm font-bold" aria-hidden="true">{initials(profile.full_name)}</span>
-        </div>
-        <div className={`mt-3 grid gap-2 ${stats.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
-          {stats.map((stat) => (
-            <article key={stat.label} className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-[0_8px_24px_rgba(74,25,66,0.06)] ring-1 ring-rose-50">
-              <p className="truncate text-lg font-extrabold leading-tight">{stat.value}</p>
-              <p className="mt-0.5 text-[11px] font-medium text-rose-400">{stat.label}</p>
-            </article>
+    <div className="flex h-full min-h-0 flex-col">
+      <TodayDashboard
+        dateLabel={formatDayLong(today)}
+        slug={profile.slug}
+        count={confirmedCount(appointments)}
+        revenue={euroShort(revenue)}
+        trend={revenue > previous ? "up" : revenue < previous ? "down" : "flat"}
+        free={gaps ? String(gaps.length) : "–"}
+        next={next ? {
+          time: formatTime(next.starts_at),
+          line: nextLine(next),
+          phone: next.client_phone,
+          maps,
+          sms: next.client_phone ? smsHref(next.client_phone, `Bonjour ${firstName(next.client_name ?? "")}, je vous confirme le rendez-vous de ${formatTime(next.starts_at)}.`) : null,
+        } : null}
+        rows={rowsView}
+        empty={appointments.length === 0 && rowsView.length === 0}
+        needsSetup={(serviceRows ?? []).length === 0 || hours.length === 0}
+        ok={params.ok}
+        erreur={params.erreur}
+        agendaHref={`/espace/agenda?jour=${today}&ajout=1`}
+      />
+      {appointments.length === 0 && rowsView.length === 0 ? (
+        <form action={loadDemo} className="px-4 pb-2 text-center">
+          <button className="text-sm font-semibold text-[#D9577A]">Charger un exemple</button>
+        </form>
+      ) : null}
+      {refills.length > 0 ? (
+        <div className="space-y-1 px-4 pb-2">
+          {refills.map((item) => (
+            <a key={item.id} href={waHref(item.client_phone ?? "", `Bonjour ${firstName(item.client_name ?? "")}, on cale un créneau ? ${pageUrl}`)} className="block text-sm font-semibold text-[#D9577A]" target="_blank" rel="noreferrer">
+              Relancer {item.client_name}
+            </a>
           ))}
         </div>
-      </header>
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-20">
-        <Flash ok={params.ok} erreur={params.erreur} />
-        {needsSetup ? (
-          <Link href="/espace/reglages/prestations" className="flex items-center justify-between rounded-2xl bg-rose-50 px-3 py-2 text-sm font-medium">
-            Ajoute tes prestations et horaires
-            <span aria-hidden="true">→</span>
-          </Link>
-        ) : null}
-        {next ? <NextCard item={next} /> : null}
-        <section>
-          <h2 className="text-sm font-bold">Programme du jour</h2>
-          {appointments.length === 0 && programme.length === 0 ? (
-            <div className="mt-2 rounded-2xl bg-rose-50/60 px-4 py-6 text-center">
-              <p className="font-semibold">Aucun rendez-vous aujourd’hui</p>
-              <form action={loadDemo} className="mt-3">
-                <button className="text-sm font-semibold text-rose-500">Charger un exemple</button>
-              </form>
-            </div>
-          ) : (
-            <ol className="mt-2 space-y-2">
-              {appointments.length === 0 ? <li className="text-sm text-rose-400">Aucun rendez-vous aujourd’hui</li> : null}
-              {programme.map((row) => row.kind === "gap" ? (
-                <li key={`${row.starts_at}-libre`} className="flex gap-2">
-                  <p className="w-12 shrink-0 pt-3 text-xs font-semibold text-rose-300">{formatTime(row.starts_at)}</p>
-                  <p className="flex-1 rounded-2xl border border-dashed border-rose-200 bg-rose-50/50 px-3 py-3 text-sm text-rose-400">Libre · Créneau disponible</p>
-                </li>
-              ) : (
-                <li key={row.item.id}><TimelineCard item={row.item} /></li>
-              ))}
-            </ol>
-          )}
-        </section>
-        {refills.length > 0 ? (
-          <section className="space-y-2">
-            <h2 className="text-sm font-bold">À relancer</h2>
-            {refills.map((item) => (
-              <a key={item.id} href={waHref(item.client_phone ?? "", `Bonjour ${firstName(item.client_name ?? "")}, on cale un créneau ? ${pageUrl}`)} className="block rounded-2xl bg-white px-3 py-2 text-sm shadow-[0_8px_24px_rgba(74,25,66,0.06)] ring-1 ring-rose-50" target="_blank" rel="noreferrer">
-                <span className="font-semibold">{item.client_name}</span>
-                <span className="mt-0.5 block text-rose-400">WhatsApp</span>
-              </a>
-            ))}
-          </section>
-        ) : null}
-        <VitrineBar slug={profile.slug} embedded />
-        {services.length > 0 ? <InviteDialog services={services} className="flex h-11 w-full items-center justify-center rounded-2xl bg-rose-50 text-sm font-semibold text-[#4a1942]" /> : null}
-      </div>
-      <Link href={`/espace/agenda?jour=${today}&ajout=1`} className="absolute bottom-3 right-3 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#4a1942] text-3xl font-light leading-none text-white shadow-lg shadow-rose-200" aria-label="Ajouter un rendez-vous">+</Link>
+      ) : null}
     </div>
   );
+}
+
+function euroShort(cents: number) {
+  if (cents % 100 === 0) return `${cents / 100} €`;
+  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(cents / 100);
+}
+
+function durShort(min: number) {
+  const hours = Math.floor(min / 60);
+  const minutes = min % 60;
+  if (hours && minutes) return `${hours}h${minutes}`;
+  if (hours) return `${hours}h`;
+  return `${minutes} min`;
+}
+
+function minutesOf(item: Appointment) {
+  if (item.duration_min && item.duration_min > 0) return item.duration_min;
+  return Math.max(15, Math.round((new Date(item.ends_at).getTime() - new Date(item.starts_at).getTime()) / 60_000));
+}
+
+function shortName(name: string | null) {
+  if (!name?.trim()) return "Cliente";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  return `${parts[0]} ${parts[1][0]?.toUpperCase()}.`;
+}
+
+function nextLine(item: Appointment) {
+  const bits = [formatTime(item.starts_at), shortName(item.client_name), item.service_name || "Rendez-vous", durShort(minutesOf(item))];
+  if (item.price_cents) bits.push(euroShort(item.price_cents));
+  return bits.join(" · ");
+}
+
+function badge(item: Appointment) {
+  const duration = durShort(minutesOf(item));
+  if (item.status === "blocked" || !item.price_cents) return duration;
+  return `${duration} · ${euroShort(item.price_cents)}`;
 }
 
 function freeToday(
@@ -140,56 +138,21 @@ function freeToday(
   });
 }
 
-function programmeRows(appointments: Appointment[], gaps: FreeGap[]) {
+function programmeRows(appointments: Appointment[], gaps: FreeGap[], nextId: string | null): TodayRow[] {
   return [
-    ...appointments.map((item) => ({ kind: "rdv" as const, item, at: item.starts_at })),
-    ...gaps.map((gap) => ({ kind: "gap" as const, ...gap, at: gap.starts_at })),
-  ].sort((a, b) => +new Date(a.at) - +new Date(b.at));
-}
-
-function NextCard({ item }: { item: Appointment }) {
-  const minutes = item.duration_min ?? Math.max(15, Math.round((new Date(item.ends_at).getTime() - new Date(item.starts_at).getTime()) / 60_000));
-  return (
-    <section className="rounded-3xl bg-gradient-to-br from-rose-50 to-white p-4 shadow-[0_10px_30px_rgba(74,25,66,0.08)] ring-1 ring-rose-100">
-      <p className="text-xs font-semibold uppercase tracking-wide text-rose-400">Prochain rendez-vous</p>
-      <p className="mt-1 text-lg font-extrabold">{formatTime(item.starts_at)} · {item.client_name}</p>
-      <p className="text-sm text-rose-400">{item.service_name || "Rendez-vous"} · {formatDuration(minutes)}{item.price_cents ? ` · ${formatEuro(item.price_cents)}` : ""}</p>
-      {item.client_phone ? (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <a href={telHref(item.client_phone)} className="flex h-10 items-center justify-center rounded-2xl bg-[#4a1942] text-sm font-semibold text-white">Appeler</a>
-          <a href={smsHref(item.client_phone, `Bonjour ${firstName(item.client_name ?? "")}, je vous confirme le rendez-vous de ${formatTime(item.starts_at)}.`)} className="flex h-10 items-center justify-center rounded-2xl bg-white text-sm font-semibold ring-1 ring-rose-100">SMS</a>
-        </div>
-      ) : null}
-    </section>
-  );
-}
-
-function TimelineCard({ item }: { item: Appointment }) {
-  const blocked = item.status === "blocked";
-  const minutes = item.duration_min ?? Math.max(15, Math.round((new Date(item.ends_at).getTime() - new Date(item.starts_at).getTime()) / 60_000));
-  return (
-    <div className="flex gap-2">
-      <p className="w-12 shrink-0 pt-3 text-xs font-semibold">{formatTime(item.starts_at)}</p>
-      <article className="min-w-0 flex-1 rounded-2xl bg-white px-3 py-2.5 shadow-[0_8px_24px_rgba(74,25,66,0.06)] ring-1 ring-rose-50">
-        <div className="flex items-start gap-2">
-          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-400" aria-hidden="true">
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-              <rect x="4" y="5" width="16" height="15" rx="2" />
-              <path strokeLinecap="round" d="M8 3v4M16 3v4M4 10h16" />
-            </svg>
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-semibold">{blocked ? item.service_name || "Indisponible" : item.client_name}</p>
-            <p className="truncate text-sm text-rose-400">{blocked ? "Créneau fermé" : item.service_name || "Rendez-vous"}</p>
-            <p className="mt-1 inline-flex rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-500">{blocked ? formatDuration(minutes) : `${formatDuration(minutes)}${item.price_cents ? ` · ${formatEuro(item.price_cents)}` : ""}`}</p>
-          </div>
-        </div>
-        <form action={cancelAppointment} className="mt-1 text-right">
-          <input type="hidden" name="id" value={item.id} />
-          <input type="hidden" name="back" value="/espace/aujourdhui" />
-          <button className="text-xs font-semibold text-rose-500">{blocked ? "Retirer" : "Annuler"}</button>
-        </form>
-      </article>
-    </div>
-  );
+    ...appointments.map((item) => ({
+      kind: "rdv" as const,
+      id: item.id,
+      time: formatTime(item.starts_at),
+      name: item.status === "blocked" ? item.service_name || "Indisponible" : shortName(item.client_name),
+      service: item.status === "blocked" ? "Créneau fermé" : item.service_name || "Rendez-vous",
+      badge: badge(item),
+      highlighted: item.id === nextId,
+      blocked: item.status === "blocked",
+      at: item.starts_at,
+    })),
+    ...gaps.map((gap) => ({ kind: "gap" as const, id: `${gap.starts_at}-libre`, time: formatTime(gap.starts_at), at: gap.starts_at })),
+  ]
+    .sort((a, b) => +new Date(a.at) - +new Date(b.at))
+    .map(({ at: _at, ...row }) => row);
 }

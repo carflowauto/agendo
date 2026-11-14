@@ -25,7 +25,7 @@ export default async function EspaceLayout({ children }: { children: ReactNode }
     );
   }
   return (
-    <ProShell profile={profile} email={user.email ?? ""} slug={profile.slug}>
+    <ProShell profile={profile} email={user.email ?? ""} fullName={profile.full_name}>
       {children}
     </ProShell>
   );
