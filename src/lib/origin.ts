@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { siteUrl } from "@/lib/site";
 
 export async function requestOrigin() {
   const h = await headers();
@@ -7,5 +8,5 @@ export async function requestOrigin() {
     const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
     return `${proto}://${host}`;
   }
-  return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return siteUrl();
 }

@@ -24,8 +24,8 @@ export type ReminderPayload = {
 };
 
 export function reminderSubject(kind: ReminderKind, service?: string) {
-  if (kind === "confirmation") return `Confirmation · ${service ?? "votre rendez-vous"}`;
-  return `Rappel · ${service ?? "votre rendez-vous"} demain`;
+  if (kind === "confirmation") return `Sheensy · Confirmation · ${service ?? "votre rendez-vous"}`;
+  return `Sheensy · Rappel · ${service ?? "votre rendez-vous"}`;
 }
 
 export function resendConfigured() {

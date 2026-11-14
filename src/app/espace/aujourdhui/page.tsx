@@ -5,7 +5,7 @@ import { ShareCard } from "@/components/share-card";
 import { Flash, cardClass } from "@/components/ui";
 import { addDays, formatDayLong, formatDuration, formatTime, parisDateKey, zonedWallTimeToUtc } from "@/lib/dates";
 import { formatEuro } from "@/lib/money";
-import { requestOrigin } from "@/lib/origin";
+import { vitrineUrl } from "@/lib/storefront";
 import { firstName, formatPhone, telHref, waHref } from "@/lib/phone";
 import { confirmedCount, dayRevenue, nextAppointment } from "@/lib/today";
 import { cancelAppointment, loadDemo } from "@/server/actions";
@@ -34,8 +34,7 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
   const others = appointments.filter((item) => item.id !== next?.id);
   const futureClients = new Set((futureRows ?? []).map((row) => row.client_id).filter(Boolean));
   const refills = ((pastRows ?? []) as Appointment[]).filter((item) => item.client_id && item.client_phone && !futureClients.has(item.client_id));
-  const origin = await requestOrigin();
-  const pageUrl = `${origin}/${profile.slug}`;
+  const pageUrl = vitrineUrl(profile.slug);
   const count = confirmedCount(appointments);
 
   return (

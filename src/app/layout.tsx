@@ -1,13 +1,25 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const url = siteUrl();
 
 export const metadata: Metadata = {
-  title: { default: "Agendo", template: "%s · Agendo" },
-  description: "Prise de rendez-vous en ligne pour prothésistes ongulaires et indépendantes.",
+  metadataBase: new URL(url),
+  title: { default: "Sheensy", template: "%s · Sheensy" },
+  description: "Prise de rendez-vous en ligne pour les pros de la beauté.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Sheensy",
+    description: "Prise de rendez-vous en ligne pour les pros de la beauté.",
+    siteName: "Sheensy",
+    url,
+    locale: "fr_FR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

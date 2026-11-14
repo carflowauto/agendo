@@ -1,6 +1,6 @@
-# Agendo
+# Sheensy
 
-Espace pro de prise de rendez-vous pour indépendantes, en français. La cible de cette V1 est la prothésiste ongulaire : inscription courte, cinq onglets (Aujourd’hui, Agenda, Clientes, Ma page, Réglages), invitation sur des créneaux précis, page vitrine `/{slug}`, lien iCal.
+Espace pro de prise de rendez-vous pour les pros de la beauté, en français. Inscription courte, espace pro (Aujourd’hui, Agenda, Clientes, Réglages), invitation sur des créneaux précis, page vitrine `/{slug}`, lien iCal.
 
 L’application est en **Next.js** (App Router, TypeScript, Tailwind) avec **Supabase** (auth e-mail et Postgres). Elle se déploie sur **Cloudflare Workers** via `@opennextjs/cloudflare` et Wrangler, dans un **projet Cloudflare distinct** de tout site déjà hébergé sur le compte.
 
@@ -38,10 +38,10 @@ Dans **Authentication → Sign In / Providers → Email** :
 
 Dans **Authentication → URL Configuration**, au moment du déploiement :
 
-- Site URL : `http://localhost:3000` en local, puis l’URL `*.workers.dev` du worker Agendo.
+- Site URL : `https://sheensy.com` (variable `NEXT_PUBLIC_SITE_URL`).
 - Redirect URLs :
-  - `http://localhost:3000/auth/callback`
-  - `https://agendo.<sous-domaine>.workers.dev/auth/callback`
+  - `https://sheensy.com/auth/callback`
+  - `http://localhost:3000/auth/callback` si vous testez en local
 
 ## 3. Lancer en local
 
@@ -62,7 +62,7 @@ Ouvrir <http://localhost:3000/inscription>, créer le compte en trois étapes (e
 
 ## 4. Déployer sur Cloudflare (projet séparé)
 
-Le compte Cloudflare héberge déjà un autre site. **Ne pas l’ouvrir, ne pas modifier son domaine, ses DNS, ses routes ni son worker.** Agendo est un worker nouveau, nommé `agendo` (champ `name` de [`wrangler.jsonc`](wrangler.jsonc)). Ce nom ne doit pas être celui de l’autre site. Le fichier ne déclare **aucune route ni domaine personnalisé** : le déploiement crée seulement une adresse `https://agendo.<sous-domaine>.workers.dev`.
+Le compte Cloudflare héberge déjà un autre site. **Ne pas l’ouvrir, ne pas modifier son domaine, ses DNS, ses routes ni son worker.** Sheensy se déploie sur un worker nouveau, dont le nom technique reste `agendo` (champ `name` de [`wrangler.jsonc`](wrangler.jsonc)). Ce nom ne doit pas être celui de l’autre site. Le fichier ne déclare **aucune route ni domaine personnalisé**. Le domaine public prévu est `https://sheensy.com`.
 
 ### Variables
 
@@ -72,7 +72,7 @@ Les variables `NEXT_PUBLIC_*` sont figées **au moment du build**. Il faut les f
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | build + runtime | `https://dilkyofvugsaoqrawnwm.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | build + runtime | clé anon, jamais dans Git |
-| `NEXT_PUBLIC_APP_URL` | build + runtime | URL du worker, sans slash final |
+| `NEXT_PUBLIC_SITE_URL` | build + runtime | URL publique, sans slash final. Défaut `https://sheensy.com` |
 | `SUPABASE_SERVICE_ROLE_KEY` | runtime, optionnel | seulement `/api/cron/rappels` |
 | `REMINDERS_CRON_SECRET` | runtime, optionnel | protège cette route |
 

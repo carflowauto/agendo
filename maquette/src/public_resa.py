@@ -105,7 +105,7 @@ html = head("Salon Marie – Coiffure · Réserver en ligne") + """<body class="
   <button id="confirm-m" disabled class="h-11 px-5 rounded-xl grad text-white text-sm font-semibold disabled:opacity-40">Confirmer le rendez-vous</button>
 </div>
 
-<footer class="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-xs text-slate-400 flex justify-between"><span>Réservation propulsée par <a href="index.html" class="font-semibold text-slate-500 hover:text-brand-600">Agendo</a></span><a href="#" class="hover:text-slate-600">Confidentialité</a></footer>
+<footer class="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-xs text-slate-400 flex justify-between"><span>Réservation propulsée par <a href="index.html" class="font-semibold text-slate-500 hover:text-brand-600">Sheensy</a></span><a href="#" class="hover:text-slate-600">Confidentialité</a></footer>
 
 <script>
 const SERVICES = [
@@ -300,9 +300,9 @@ set('c-service',svc); set('c-dur',fmtDur(dur)); set('c-price',price+' € · à 
 const pad=n=>String(n).padStart(2,'0');
 const stamp=m=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(Math.floor(m/60))}${pad(m%60)}00`;
 const title=svc+' – Salon Marie', loc='24 rue Oberkampf, 75011 Paris';
-document.getElementById('cal-google').href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+stamp(startM)+'/'+stamp(endM)+'&ctz=Europe/Paris&location='+encodeURIComponent(loc)+'&details='+encodeURIComponent('Réservé via Agendo – réf. AGD-7K42Q');
+document.getElementById('cal-google').href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+stamp(startM)+'/'+stamp(endM)+'&ctz=Europe/Paris&location='+encodeURIComponent(loc)+'&details='+encodeURIComponent('Réservé via Sheensy – réf. AGD-7K42Q');
 document.getElementById('cal-outlook').href='https://outlook.live.com/calendar/0/deeplink/compose?subject='+encodeURIComponent(title)+'&location='+encodeURIComponent(loc);
-const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Agendo//FR','BEGIN:VEVENT','UID:AGD-7K42Q@agendo.fr','DTSTART;TZID=Europe/Paris:'+stamp(startM),'DTEND;TZID=Europe/Paris:'+stamp(endM),'SUMMARY:'+title,'LOCATION:'+loc,'END:VEVENT','END:VCALENDAR'].join('\\r\\n');
+const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Sheensy//FR','BEGIN:VEVENT','UID:AGD-7K42Q@sheensy.com','DTSTART;TZID=Europe/Paris:'+stamp(startM),'DTEND;TZID=Europe/Paris:'+stamp(endM),'SUMMARY:'+title,'LOCATION:'+loc,'END:VEVENT','END:VCALENDAR'].join('\\r\\n');
 const a=document.getElementById('cal-apple'); a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'})); a.download='rendez-vous-salon-marie.ics';
 document.getElementById('addcal').onclick=e=>{e.stopPropagation();document.getElementById('calmenu').classList.toggle('hidden');};
 document.addEventListener('click',()=>document.getElementById('calmenu').classList.add('hidden'));

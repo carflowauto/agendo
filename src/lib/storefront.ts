@@ -1,11 +1,11 @@
-export const VITRINE_HOST = "agendo.thomas-duraz-agent.workers.dev";
+import { siteHost, siteUrl } from "@/lib/site";
 
 export function vitrineUrl(slug: string) {
-  return `https://${VITRINE_HOST}/${slug}`;
+  return `${siteUrl()}/${slug}`;
 }
 
 export function vitrineLabel(slug: string) {
-  return `${VITRINE_HOST}/${slug}`;
+  return `${siteHost()}/${slug}`;
 }
 
 export function mapsSearchUrl(address: string | null | undefined, city: string | null | undefined) {

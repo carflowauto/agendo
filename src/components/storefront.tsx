@@ -7,7 +7,7 @@ import { formatDuration } from "@/lib/dates";
 import { formatEuro } from "@/lib/money";
 import { formatPhone, telHref } from "@/lib/phone";
 import { initials } from "@/lib/phone";
-import { hasReviews, mapsSearchUrl } from "@/lib/storefront";
+import { hasReviews, mapsSearchUrl, vitrineUrl } from "@/lib/storefront";
 import type { BookingContext, PublicReview } from "@/lib/types";
 
 export function Storefront({ page, slug }: { page: BookingContext; slug: string }) {
@@ -24,7 +24,7 @@ export function Storefront({ page, slug }: { page: BookingContext; slug: string 
   const addressLine = [page.address, page.city].filter(Boolean).join(", ");
 
   async function share() {
-    const url = window.location.href;
+    const url = vitrineUrl(slug);
     const payload = { title: page.full_name, text: `Réservez chez ${page.full_name}`, url };
     if (navigator.share) {
       try { await navigator.share(payload); return; } catch { /* copie ensuite */ }

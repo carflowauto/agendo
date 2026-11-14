@@ -15,7 +15,7 @@ export function buildIcs(opts: {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Agendo//Espace pro//FR",
+    "PRODID:-//Sheensy//Espace pro//FR",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${escapeText(opts.name)}`,
@@ -25,7 +25,7 @@ export function buildIcs(opts: {
   const stamp = icsStamp(new Date().toISOString());
   for (const event of opts.events) {
     lines.push("BEGIN:VEVENT");
-    lines.push(`UID:${event.uid}@agendo`);
+    lines.push(`UID:${event.uid}@sheensy.com`);
     lines.push(`DTSTAMP:${stamp}`);
     lines.push(`DTSTART:${icsStamp(event.starts_at)}`);
     lines.push(`DTEND:${icsStamp(event.ends_at)}`);

@@ -10,7 +10,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
   const { supabase, profile } = await requireProfile();
   const { data } = await supabase.from("services").select("*").eq("profile_id", profile.id).order("sort_order");
   return (
-    <SettingsScreen title="Prestations" hint="Votre carte, et des idées pour les ongles" ok={params.ok} erreur={params.erreur}>
+    <SettingsScreen title="Prestations" hint="Votre carte, et quelques idées" ok={params.ok} erreur={params.erreur}>
       <ServicesEditor services={(data ?? []) as Service[]} />
     </SettingsScreen>
   );

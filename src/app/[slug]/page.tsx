@@ -2,13 +2,19 @@ import { notFound } from "next/navigation";
 import { Storefront } from "@/components/storefront";
 import { hasSupabaseEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
+import { siteUrl } from "@/lib/site";
 import { RESERVED_SLUGS, type BookingContext } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return { title: slug };
+  const canonical = `${siteUrl()}/${slug}`;
+  return {
+    title: slug,
+    alternates: { canonical },
+    openGraph: { title: slug, url: canonical, siteName: "Sheensy" },
+  };
 }
 
 export default async function PublicPage({ params }: { params: Promise<{ slug: string }> }) {

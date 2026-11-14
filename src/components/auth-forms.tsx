@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { hasSupabaseEnv } from "@/lib/env";
+import { siteUrl } from "@/lib/site";
 import { btnPrimary, ConfigMissing, fieldClass, labelClass } from "@/components/ui";
 
 function mapAuth(message: string) {
@@ -71,7 +72,7 @@ export function ForgotForm() {
         const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
         const supabase = createClient();
         const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth/callback?next=/espace/reglages`,
+          redirectTo: `${siteUrl()}/auth/callback?next=/espace/reglages`,
         });
         if (authError) setError(mapAuth(authError.message));
         else setInfo("Si un compte existe avec cet e-mail, un lien de réinitialisation vient d’être envoyé.");
