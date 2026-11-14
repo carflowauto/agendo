@@ -11,7 +11,8 @@ import {
   stepIsValid,
   type SignupDraft,
 } from "@/lib/signup";
-import { ConfigMissing, Logo } from "@/components/ui";
+import { ConfigMissing } from "@/components/ui";
+import { Sparkles } from "lucide-react";
 
 const TITLES = ["Votre enseigne", "Où vous trouver", "Votre accès"] as const;
 
@@ -27,7 +28,9 @@ function mapAuth(message: string) {
 }
 
 const inputClass =
-  "mt-1 w-full rounded-2xl border border-white/80 bg-white px-3.5 h-11 text-base text-slate-900 outline-none shadow-sm focus:ring-2 focus:ring-brand-400";
+  "mt-1 w-full rounded-2xl border-0 bg-[#FDE8EF] px-3.5 h-11 text-base text-[#3B1230] outline-none placeholder:text-[#C4A8B4] focus:ring-2 focus:ring-[#E23B6E]/30";
+const goClass =
+  "h-11 rounded-2xl bg-gradient-to-r from-[#F25A8C] to-[#5A1844] text-sm font-semibold text-white disabled:opacity-40";
 
 export function SignupWizard() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -89,38 +92,41 @@ export function SignupWizard() {
   }
 
   return (
-    <main className="h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_#fde7f3_0%,_#eef2ff_42%,_#f8fafc_100%)] text-slate-800">
+    <main className="h-dvh overflow-hidden bg-[linear-gradient(180deg,#FDE4EC_0%,#FFF6F8_36%,#FFFFFF_62%)] text-[#3B1230]">
       <div className="mx-auto flex h-full w-full max-w-md flex-col px-5 pt-4 pb-4 sm:max-w-[420px] sm:px-0 sm:py-6">
-        <div className="flex min-h-0 flex-1 flex-col rounded-[28px] sm:border sm:border-white/70 sm:bg-white/75 sm:px-6 sm:py-5 sm:shadow-xl sm:shadow-brand-900/10 sm:backdrop-blur">
+        <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex items-center justify-between">
-            <Logo href="/" compact />
-            <Link href="/connexion" className="text-sm font-semibold text-brand-700">
+            <Link href="/" className="relative inline-flex items-center text-[28px] font-extrabold leading-none tracking-tight text-[#E23B6E]">
+              Sheensy
+              <Sparkles className="ml-1 h-4 w-4" />
+            </Link>
+            <Link href="/connexion" className="text-sm font-semibold text-[#E23B6E]">
               Connexion
             </Link>
           </div>
 
           <div className="mt-4" aria-label={`Étape ${step} sur 3`}>
-            <div className="flex items-center justify-between text-xs font-semibold text-brand-700">
+            <div className="flex items-center justify-between text-xs font-semibold text-[#E23B6E]">
               <span>
                 {step}/3
               </span>
               <span>{TITLES[step - 1]}</span>
             </div>
-            <div className="mt-1.5 h-1.5 rounded-full bg-white/80">
-              <div className="h-full rounded-full grad transition-all duration-500 ease-out" style={{ width: `${(step / 3) * 100}%` }} />
+            <div className="mt-1.5 h-1.5 rounded-full bg-[#FDE8EF]">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#F25A8C] to-[#5A1844] transition-all duration-500 ease-out" style={{ width: `${(step / 3) * 100}%` }} />
             </div>
           </div>
 
           <div key={step} data-step={step} className="step-in mt-4 flex min-h-0 flex-1 flex-col">
-            <h1 className="text-[1.65rem] font-extrabold leading-tight tracking-tight text-slate-900">{TITLES[step - 1]}</h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <h1 className="text-[1.65rem] font-extrabold leading-tight tracking-tight text-[#3B1230]">{TITLES[step - 1]}</h1>
+            <p className="mt-1 text-sm text-[#8E7F87]">
               {step === 1 ? "Le nom qui s’affiche sur votre page." : step === 2 ? "Pour votre lien et vos clientes." : "Vous pourrez compléter le reste ensuite."}
             </p>
 
             <div className="mt-4 space-y-3">
               {step === 1 ? (
                 <>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     Nom de votre enseigne
                     <input
                       className={inputClass}
@@ -130,7 +136,7 @@ export function SignupWizard() {
                       onChange={(event) => patch({ enseigne: event.target.value })}
                     />
                   </label>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     Métier
                     <select className={inputClass} value={draft.profession} onChange={(event) => patch({ profession: event.target.value })}>
                       {PROFESSIONS.map((profession) => (
@@ -142,7 +148,7 @@ export function SignupWizard() {
               ) : null}
               {step === 2 ? (
                 <>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     Ville
                     <input
                       className={inputClass}
@@ -152,7 +158,7 @@ export function SignupWizard() {
                       onChange={(event) => patch({ city: event.target.value })}
                     />
                   </label>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     Numéro de téléphone
                     <input
                       className={inputClass}
@@ -167,7 +173,7 @@ export function SignupWizard() {
               ) : null}
               {step === 3 ? (
                 <>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     E-mail
                     <input
                       className={inputClass}
@@ -178,7 +184,7 @@ export function SignupWizard() {
                       onChange={(event) => patch({ email: event.target.value })}
                     />
                   </label>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-semibold text-[#3B1230]">
                     Mot de passe
                     <input
                       className={inputClass}
@@ -199,7 +205,7 @@ export function SignupWizard() {
             <div className="mt-auto grid grid-cols-[auto_1fr] gap-2 pt-4">
               <button
                 type="button"
-                className="h-11 rounded-2xl px-4 text-sm font-semibold text-slate-600 hover:bg-white/70"
+                className="h-11 rounded-2xl px-4 text-sm font-semibold text-[#8E7F87]"
                 onClick={() => {
                   setError(null);
                   setInfo(null);
@@ -213,7 +219,7 @@ export function SignupWizard() {
                 <button
                   type="button"
                   disabled={!valid}
-                  className="h-11 rounded-2xl grad text-sm font-semibold text-white shadow-md shadow-brand-500/20 disabled:opacity-40"
+                  className={goClass}
                   onClick={() => {
                     if (!valid) return;
                     setStep((current) => (current === 1 ? 2 : 3));
@@ -225,7 +231,7 @@ export function SignupWizard() {
                 <button
                   type="button"
                   disabled={!valid || pending}
-                  className="h-11 rounded-2xl grad text-sm font-semibold text-white shadow-md shadow-brand-500/20 disabled:opacity-40"
+                  className={goClass}
                   onClick={() => void createAccount()}
                 >
                   {pending ? "Création…" : "Créer mon espace"}

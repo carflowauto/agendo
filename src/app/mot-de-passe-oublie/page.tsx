@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { ForgotForm } from "@/components/auth-forms";
-import { Logo, cardClass } from "@/components/ui";
+import { AuthShell } from "@/components/auth-shell";
 
 export const metadata = { title: "Mot de passe oublié" };
 
 export default function ForgotPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-5">
-      <div className={`${cardClass} w-full max-w-md p-8`}>
-        <Logo />
-        <h1 className="mt-6 text-2xl font-extrabold text-slate-900">Mot de passe oublié</h1>
-        <div className="mt-6"><ForgotForm /></div>
-        <p className="mt-4 text-sm"><Link href="/connexion" className="text-brand-700 font-semibold">Retour à la connexion</Link></p>
-      </div>
-    </main>
+    <AuthShell>
+      <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-[#3B1230]">Mot de passe oublié</h1>
+      <p className="mt-2 text-[16px] text-[#8E7F87]">Nous vous envoyons un lien pour le choisir à nouveau.</p>
+      <ForgotForm />
+      <p className="mt-5 text-center">
+        <Link href="/connexion" className="text-[15px] font-semibold text-[#E23B6E]">Retour à la connexion</Link>
+      </p>
+    </AuthShell>
   );
 }

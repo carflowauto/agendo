@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LoginForm } from "@/components/auth-forms";
-import { Logo, cardClass } from "@/components/ui";
+import { AuthShell } from "@/components/auth-shell";
 
 export const metadata = { title: "Connexion" };
 
@@ -8,20 +8,15 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
   const suivant = params.suivant && params.suivant.startsWith("/") && !params.suivant.startsWith("//") ? params.suivant : "/espace/aujourdhui";
   return (
-    <main className="min-h-screen flex items-center justify-center p-5">
-      <div className={`${cardClass} w-full max-w-md p-8`}>
-        <Logo />
-        <h1 className="mt-6 text-2xl font-extrabold text-slate-900">Connexion</h1>
-        <p className="mt-1 text-sm text-slate-500">Retrouvez votre espace pro.</p>
-        {params.erreur ? <p className="mt-4 rounded-xl bg-rose-50 text-rose-700 text-sm px-4 py-3">{params.erreur}</p> : null}
-        <div className="mt-6"><LoginForm suivant={suivant} /></div>
-        <p className="mt-4 text-sm text-slate-600">
-          <Link href="/mot-de-passe-oublie" className="text-brand-700 font-semibold">Mot de passe oublié</Link>
-        </p>
-        <p className="mt-2 text-sm text-slate-600">
-          Pas encore de compte ? <Link href="/inscription" className="text-brand-700 font-semibold">Créer mon espace</Link>
-        </p>
-      </div>
-    </main>
+    <AuthShell>
+      <h1 className="text-[40px] font-extrabold leading-none tracking-tight text-[#3B1230]">Connexion</h1>
+      <p className="mt-2 text-[16px] text-[#8E7F87]">Retrouvez votre espace pro.</p>
+      {params.erreur ? <p className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{params.erreur}</p> : null}
+      <LoginForm suivant={suivant} />
+      <p className="mt-5 text-center text-[15px] text-[#8E7F87]">Pas encore de compte ?</p>
+      <Link href="/inscription" className="mt-3 flex h-12 w-full items-center justify-center rounded-2xl border border-[#E23B6E] bg-white text-[16px] font-semibold text-[#E23B6E]">
+        Créer mon espace
+      </Link>
+    </AuthShell>
   );
 }
