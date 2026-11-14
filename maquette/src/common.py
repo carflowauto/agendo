@@ -27,7 +27,7 @@ LOGO = """<a href="index.html" class="flex items-center gap-2 shrink-0">
   <span class="grad w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </span>
-  <span class="text-xl font-extrabold tracking-tight text-slate-900">Agendo</span>
+  <span class="text-xl font-extrabold tracking-tight text-slate-900">Sheensy</span>
 </a>"""
 
 def head(title):
@@ -149,6 +149,6 @@ function toast(msg){const t=document.getElementById('toast');document.getElement
 def pro_page(title, active, page_title, subtitle, content, actions=None, extra=""):
     if actions is None:
         actions = NEW_RDV_BTN
-    return (head(title + " – Agendo Pro") + '<body class="bg-slate-50 text-slate-800">' + sidebar(active) +
+    return (head(title + " – Sheensy Pro") + '<body class="bg-slate-50 text-slate-800">' + sidebar(active) +
             '<div class="lg:pl-64 min-h-screen flex flex-col">' + topbar(page_title, subtitle, actions) +
             '<main class="flex-1 p-4 sm:p-8">' + content + '</main></div>' + MODAL_RDV + extra + PRO_JS + '</body></html>')

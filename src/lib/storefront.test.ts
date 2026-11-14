@@ -8,9 +8,9 @@ test("l’adresse ouvre une recherche Maps", () => {
   assert.equal(mapsSearchUrl("  ", ""), null);
 });
 
-test("le lien vitrine public est celui du worker", () => {
-  assert.equal(vitrineLabel("les-ongles-de-lea"), "agendo.thomas-duraz-agent.workers.dev/les-ongles-de-lea");
-  assert.equal(vitrineUrl("les-ongles-de-lea"), "https://agendo.thomas-duraz-agent.workers.dev/les-ongles-de-lea");
+test("le lien vitrine public utilise sheensy.com", () => {
+  assert.equal(vitrineLabel("atelier-lea"), "sheensy.com/atelier-lea");
+  assert.equal(vitrineUrl("atelier-lea"), "https://sheensy.com/atelier-lea");
 });
 
 test("la note est masquée sans avis", () => {

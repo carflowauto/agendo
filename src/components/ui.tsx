@@ -19,7 +19,7 @@ export function Logo({ href = "/", compact = false }: { href?: string; compact?:
           <path d="M9 15l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-      <span className={`${compact ? "text-lg" : "text-xl"} font-extrabold tracking-tight text-slate-900`}>Agendo</span>
+      <span className={`${compact ? "text-lg" : "text-xl"} font-extrabold tracking-tight text-slate-900`}>Sheensy</span>
     </a>
   );
 }

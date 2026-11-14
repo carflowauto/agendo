@@ -13,13 +13,13 @@ export async function GET(_request: Request, context: { params: Promise<{ token:
   const payload = data as IcalPayload | null;
   if (error || !payload) return new Response("Calendrier introuvable", { status: 404 });
   const body = buildIcs({
-    name: `Agendo · ${payload.full_name}`,
+    name: `Sheensy · ${payload.full_name}`,
     events: payload.events ?? [],
   });
   return new Response(body, {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": 'inline; filename="agendo.ics"',
+      "Content-Disposition": 'inline; filename="sheensy.ics"',
       "Cache-Control": "no-cache",
     },
   });

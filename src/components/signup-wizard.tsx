@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { hasSupabaseEnv } from "@/lib/env";
+import { siteUrl } from "@/lib/site";
 import {
   DEFAULT_PROFESSION,
   PROFESSIONS,
@@ -57,7 +58,7 @@ export function SignupWizard() {
       email: draft.email.trim(),
       password: draft.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: `${siteUrl()}/auth/callback`,
         data: {
           full_name: draft.enseigne.trim(),
           profession: draft.profession,
@@ -125,7 +126,7 @@ export function SignupWizard() {
                       className={inputClass}
                       value={draft.enseigne}
                       autoComplete="organization"
-                      placeholder="Les Ongles de Léa"
+                      placeholder="Atelier Léa"
                       onChange={(event) => patch({ enseigne: event.target.value })}
                     />
                   </label>

@@ -1,4 +1,4 @@
-# Maquette Agendo
+# Maquette Sheensy
 
 Référence design statique (HTML, Tailwind via CDN, police Inter, couleurs indigo / violet). Ces fichiers ne font pas partie de l'application Next.js : ils restent consultables tels quels.
 

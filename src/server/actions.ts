@@ -7,7 +7,7 @@ import { hasSupabaseEnv } from "@/lib/env";
 import { eurosToCents } from "@/lib/money";
 import { phoneDigits } from "@/lib/phone";
 import { isDateKey, zonedWallTimeToUtc } from "@/lib/dates";
-import { requestOrigin } from "@/lib/origin";
+import { siteUrl } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import { RESERVED_SLUGS } from "@/lib/types";
 import { requireProfile } from "@/server/profile";
@@ -233,9 +233,8 @@ export async function createInvitation(serviceId: string, slotsLocal: string[]) 
     .select("token")
     .single();
   if (error || !data) return { error: dbError(error) };
-  const origin = await requestOrigin();
   revalidatePath("/espace/aujourdhui");
-  return { url: `${origin}/invitation/${data.token}` };
+  return { url: `${siteUrl()}/invitation/${data.token}` };
 }
 
 export async function saveClient(formData: FormData) {

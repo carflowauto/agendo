@@ -35,7 +35,7 @@ export function ServicesEditor({ services }: { services: Service[] }) {
       </section>
 
       <section>
-        <h2 className="px-1 text-sm font-semibold text-slate-500">Suggestions ongles</h2>
+        <h2 className="px-1 text-sm font-semibold text-slate-500">Suggestions</h2>
         <div className="mt-2 space-y-2">
           {suggestions.length === 0 ? <p className="text-sm text-slate-500">Toutes les suggestions sont déjà dans votre carte.</p> : null}
           {suggestions.map((item) => (

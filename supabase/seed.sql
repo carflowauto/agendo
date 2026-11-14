@@ -1,4 +1,4 @@
--- Données de démonstration Agendo
+-- Données de démonstration Sheensy
 --
 -- Le plus simple : une fois connectée à l'espace pro, ouvrir Aujourd'hui
 -- et cliquer sur « Charger un exemple de journée ». Cela appelle

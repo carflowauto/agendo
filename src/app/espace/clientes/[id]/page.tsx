@@ -4,7 +4,7 @@ import { ProColumn } from "@/components/pro-shell";
 import { Flash, cardClass, fieldClass, labelClass } from "@/components/ui";
 import { addDays, formatDayLong, formatDuration, formatTime, parisDateKey } from "@/lib/dates";
 import { formatEuro } from "@/lib/money";
-import { requestOrigin } from "@/lib/origin";
+import { vitrineUrl } from "@/lib/storefront";
 import { firstName, formatPhone, telHref, waHref } from "@/lib/phone";
 import { saveClient } from "@/server/actions";
 import { requireProfile } from "@/server/profile";
@@ -35,8 +35,7 @@ export default async function ClientPage({
     return key >= addDays(target, -1) && key <= addDays(target, 1);
   });
   const hasFuture = visits.some((item) => item.status === "confirmed" && new Date(item.starts_at).getTime() > Date.now());
-  const origin = await requestOrigin();
-  const refillText = `Bonjour ${firstName(row.full_name)}, c’est l’heure du remplissage 💅 On cale un créneau ? ${origin}/${profile.slug}`;
+  const refillText = `Bonjour ${firstName(row.full_name)}, c’est l’heure du remplissage. On cale un créneau ? ${vitrineUrl(profile.slug)}`;
 
   return (
     <ProColumn
@@ -67,7 +66,7 @@ export default async function ClientPage({
         <label className={labelClass}>Nom<input name="name" defaultValue={row.full_name} required className={fieldClass} /></label>
         <label className={labelClass}>Téléphone<input name="phone" defaultValue={row.phone} required className={fieldClass} /></label>
         <label className={labelClass}>E-mail<input name="email" type="email" defaultValue={row.email ?? ""} className={fieldClass} /></label>
-        <textarea name="notes" rows={3} defaultValue={row.notes ?? ""} placeholder="Préférences, allergies, forme des ongles…" className="w-full rounded-2xl border border-white/80 bg-white px-3 py-2 text-sm" />
+        <textarea name="notes" rows={3} defaultValue={row.notes ?? ""} placeholder="Préférences, allergies…" className="w-full rounded-2xl border border-white/80 bg-white px-3 py-2 text-sm" />
         <button className="h-11 w-full rounded-2xl grad text-sm font-semibold text-white">Enregistrer</button>
       </form>
       <section className={`${cardClass} mt-3 p-3`}>

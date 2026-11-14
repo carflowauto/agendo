@@ -1,7 +1,7 @@
 import { CopyButton } from "@/components/copy-button";
 import { SettingsScreen } from "@/components/settings-screen";
 import { cardClass } from "@/components/ui";
-import { requestOrigin } from "@/lib/origin";
+import { siteUrl } from "@/lib/site";
 import { requireProfile } from "@/server/profile";
 
 export const metadata = { title: "Synchronisation" };
@@ -10,8 +10,7 @@ export default async function SyncPage({ searchParams }: { searchParams: Promise
   const params = await searchParams;
   const { supabase, profile } = await requireProfile();
   const { data } = await supabase.from("google_calendar_connections").select("status, last_error").eq("profile_id", profile.id).maybeSingle();
-  const origin = await requestOrigin();
-  const ical = `${origin}/ical/${profile.ical_token}`;
+  const ical = `${siteUrl()}/ical/${profile.ical_token}`;
   const webcal = ical.replace(/^https?:/, "webcal:");
   const google = data as { status: string; last_error: string | null } | null;
   return (
