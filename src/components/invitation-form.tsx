@@ -51,6 +51,7 @@ export function InvitationForm({
           startsAt: selected,
           name: String(form.get("name") ?? ""),
           phone: String(form.get("phone") ?? ""),
+          email: String(form.get("email") ?? ""),
         });
         setPending(false);
         if (result.error) setError(result.error);
@@ -70,6 +71,7 @@ export function InvitationForm({
       </div>
       <label className={labelClass}>Nom<input name="name" required className={fieldClass} /></label>
       <label className={labelClass}>Téléphone<input name="phone" required className={fieldClass} /></label>
+      <label className={labelClass}>E-mail <span className="font-normal text-slate-500">(pour recevoir la confirmation et le rappel)</span><input name="email" type="email" autoComplete="email" className={fieldClass} placeholder="vous@exemple.fr" /></label>
       {error ? <p className="text-sm text-rose-700">{error}</p> : null}
       <button className={btnPrimary} disabled={pending || !selected}>{pending ? "Confirmation…" : "Confirmer ce créneau"}</button>
     </form>

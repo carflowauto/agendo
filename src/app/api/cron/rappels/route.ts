@@ -1,35 +1,27 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { resendConfigured } from "@/lib/email/reminders";
+import { runEmailQueue } from "@/lib/email/dispatch";
 
-export async function GET(request: Request) {
-  const secret = process.env.REMINDERS_CRON_SECRET;
+/**
+ * Lance un passage de la file d'e-mails (le Cron Trigger du worker le fait toutes les 5 min).
+ * Protégé par `Authorization: Bearer $EMAIL_QUEUE_SECRET`.
+ */
+export async function POST(request: Request) {
+  const secret = process.env.EMAIL_QUEUE_SECRET;
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
-    return NextResponse.json(
-      {
-        configured: false,
-        message: "SUPABASE_SERVICE_ROLE_KEY absente. La file email_outbox existe, la lecture cron ne peut pas démarrer.",
-      },
-      { status: 500 },
-    );
+  try {
+    const result = await runEmailQueue({
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      EMAIL_QUEUE_SECRET: process.env.EMAIL_QUEUE_SECRET,
+      RESEND_API_KEY: process.env.RESEND_API_KEY,
+    });
+    return NextResponse.json(result, { status: result.error ? 500 : 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
-  const { count, error } = await supabase
-    .from("email_outbox")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "pending")
-    .lte("scheduled_for", new Date().toISOString());
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({
-    configured: resendConfigured(),
-    pending: count ?? 0,
-    message: resendConfigured()
-      ? "Une clé Resend est présente, mais l’envoi n’est pas branché. Les messages restent dans email_outbox."
-      : "Aucun fournisseur d’e-mail. Les rappels sont enregistrés dans email_outbox et ne partent pas.",
-  });
 }
+
+export const GET = POST;

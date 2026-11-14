@@ -73,8 +73,8 @@ Les variables `NEXT_PUBLIC_*` sont figées **au moment du build**. Il faut les f
 | `NEXT_PUBLIC_SUPABASE_URL` | build + runtime | `https://dilkyofvugsaoqrawnwm.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | build + runtime | clé anon, jamais dans Git |
 | `NEXT_PUBLIC_SITE_URL` | build + runtime | URL publique, sans slash final. Défaut `https://sheensy.com` |
-| `SUPABASE_SERVICE_ROLE_KEY` | runtime, optionnel | seulement `/api/cron/rappels` |
-| `REMINDERS_CRON_SECRET` | runtime, optionnel | protège cette route |
+| `RESEND_API_KEY` | secret runtime | envoi des e-mails (Resend, domaine `sheensy.com`) |
+| `EMAIL_QUEUE_SECRET` | secret runtime | accès à la file `email_outbox` (son hash SHA-256 est dans `private.email_queue_config`) et à `/api/cron/rappels` |
 
 ### Depuis la machine, avec Wrangler
 
@@ -126,7 +126,7 @@ Le détail est dans [`supabase/seed.sql`](supabase/seed.sql).
 
 ## Préparé, pas branché
 
-- **E-mails** : chaque rendez-vous confirmé ajoute une confirmation et un rappel dans `email_outbox` (`src/lib/email/reminders.ts`). Sans e-mail de cliente, la ligne est `skipped`. `GET /api/cron/rappels` avec `Authorization: Bearer $REMINDERS_CRON_SECRET` compte les messages en attente et n’envoie rien.
+- **E-mails (branchés)** : le trigger `enqueue_appointment_emails` remplit `email_outbox` : confirmation et rappel (`reminder_hours` avant) pour la cliente si elle a laissé son e-mail, et notification à la pro pour chaque réservation en ligne ou via invitation. Le worker a un Cron Trigger (`*/5 * * * *`, `custom-worker.ts`) qui appelle `email_queue_claim` / `email_queue_complete` (fonctions SQL protégées par `EMAIL_QUEUE_SECRET`, pas de clé service_role) et envoie via Resend depuis `"<salon> via Sheensy" <rendezvous@sheensy.com>`, réponse à la pro. Chaque ligne n’est envoyée qu’une fois (statut `sending`, Idempotency-Key Resend), 5 tentatives max avec délai croissant, puis `failed`. `POST /api/cron/rappels` avec `Authorization: Bearer $EMAIL_QUEUE_SECRET` lance un passage à la main.
 - **Google Agenda** : table `google_calendar_connections`, module `src/lib/google/sync.ts`, routes `/api/google/connect` et `/api/google/callback` (réponse 501). Aucun appel Google.
 
 ## Maquette et GitHub Pages

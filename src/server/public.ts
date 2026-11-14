@@ -54,6 +54,7 @@ export async function bookPublic(input: {
   startsAt: string;
   name: string;
   phone: string;
+  email?: string;
 }) {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("book_public_appointment", {
@@ -62,6 +63,7 @@ export async function bookPublic(input: {
     p_starts_at: input.startsAt,
     p_client_name: input.name.trim(),
     p_client_phone: input.phone.trim(),
+    p_client_email: input.email?.trim() || null,
   });
   if (error) return { error: dbError(error) };
   return { booking: data as BookingResult };
@@ -72,6 +74,7 @@ export async function acceptInvitation(input: {
   startsAt: string;
   name: string;
   phone: string;
+  email?: string;
 }) {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("accept_invitation", {
@@ -79,6 +82,7 @@ export async function acceptInvitation(input: {
     p_starts_at: input.startsAt,
     p_client_name: input.name.trim(),
     p_client_phone: input.phone.trim(),
+    p_client_email: input.email?.trim() || null,
   });
   if (error) return { error: dbError(error) };
   return { booking: data as BookingResult };
