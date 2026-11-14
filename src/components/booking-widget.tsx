@@ -160,6 +160,7 @@ export function BookingWidget({
               startsAt: selected,
               name: String(form.get("name") ?? ""),
               phone: String(form.get("phone") ?? ""),
+              email: String(form.get("email") ?? ""),
             });
             setPending(false);
             if (result.error) setError(result.error);
@@ -168,6 +169,7 @@ export function BookingWidget({
         >
           <label className={labelClass}>Nom<input name="name" required disabled={!selected} className={fieldClass} /></label>
           <label className={labelClass}>Téléphone<input name="phone" required disabled={!selected} className={fieldClass} placeholder="06…" /></label>
+          <label className={`${labelClass} sm:col-span-2`}>E-mail <span className="font-normal text-slate-500">(pour recevoir la confirmation et le rappel)</span><input name="email" type="email" autoComplete="email" disabled={!selected} className={fieldClass} placeholder="vous@exemple.fr" /></label>
           <div className="sm:col-span-2">
             <button className={btnPrimary} disabled={!selected || pending}>{pending ? "Confirmation…" : "Confirmer le rendez-vous"}</button>
           </div>
