@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Paintbrush, Scissors, Sparkles } from "lucide-react";
+import { Paintbrush, Scissors } from "lucide-react";
+import { SheensyLogo } from "@/components/sheensy-logo";
 
 function NailIcon({ className }: { className?: string }) {
   return (
@@ -21,10 +22,7 @@ export function AuthShell({ children, trades = true }: { children: ReactNode; tr
     <main className="min-h-dvh bg-[linear-gradient(180deg,#FDE4EC_0%,#FFF6F8_32%,#FFFFFF_58%)]" style={{ color: plum }}>
       <div className="mx-auto flex min-h-dvh w-full max-w-[420px] flex-col px-6 pb-8 pt-12">
         <div className="text-center">
-          <p className="relative inline-block text-[52px] font-extrabold leading-none tracking-tight" style={{ color: rose }}>
-            Sheensy
-            <Sparkles className="absolute -right-3 -top-1 h-5 w-5" strokeWidth={2.2} />
-          </p>
+          <SheensyLogo href="/" size="lg" />
           <p className="mt-2 text-[15px] text-[#8E7F87]">L’agenda des pros de la beauté</p>
         </div>
         <div className="mt-8">{children}</div>

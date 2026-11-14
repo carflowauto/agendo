@@ -7,6 +7,7 @@ import { formatDuration } from "@/lib/dates";
 import { formatEuro } from "@/lib/money";
 import { formatPhone, telHref } from "@/lib/phone";
 import { initials } from "@/lib/phone";
+import { SheensyLogo } from "@/components/sheensy-logo";
 import { hasReviews, mapsSearchUrl, vitrineUrl } from "@/lib/storefront";
 import type { BookingContext, PublicReview } from "@/lib/types";
 
@@ -34,6 +35,9 @@ export function Storefront({ page, slug }: { page: BookingContext; slug: string 
 
   return (
     <div className="min-h-screen bg-white text-slate-800">
+      <div className="flex items-center bg-white px-4 py-3">
+        <SheensyLogo href="/" />
+      </div>
       <div className="relative h-64 bg-[radial-gradient(circle_at_30%_20%,#f9a8d4_0%,#818cf8_42%,#4f46e5_100%)] sm:h-80">
         {current ? (
           <img src={current.url} alt={current.caption ?? page.full_name} className="absolute inset-0 h-full w-full object-cover" />

@@ -12,7 +12,7 @@ import {
   type SignupDraft,
 } from "@/lib/signup";
 import { ConfigMissing } from "@/components/ui";
-import { Sparkles } from "lucide-react";
+import { SheensyLogo } from "@/components/sheensy-logo";
 
 const TITLES = ["Votre enseigne", "Où vous trouver", "Votre accès"] as const;
 
@@ -96,10 +96,7 @@ export function SignupWizard() {
       <div className="mx-auto flex h-full w-full max-w-md flex-col px-5 pt-4 pb-4 sm:max-w-[420px] sm:px-0 sm:py-6">
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex items-center justify-between">
-            <Link href="/" className="relative inline-flex items-center text-[28px] font-extrabold leading-none tracking-tight text-[#E23B6E]">
-              Sheensy
-              <Sparkles className="ml-1 h-4 w-4" />
-            </Link>
+            <SheensyLogo href="/" />
             <Link href="/connexion" className="text-sm font-semibold text-[#E23B6E]">
               Connexion
             </Link>

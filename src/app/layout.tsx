@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Serif_Display, Inter } from "next/font/google";
 import type { ReactNode } from "react";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const display = DM_Serif_Display({ subsets: ["latin"], weight: "400", variable: "--font-display" });
 const url = siteUrl();
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr">
-      <body className={`${inter.variable} font-sans bg-slate-50 text-slate-800`}>{children}</body>
+      <body className={`${inter.variable} ${display.variable} font-sans bg-slate-50 text-slate-800`}>{children}</body>
     </html>
   );
 }
