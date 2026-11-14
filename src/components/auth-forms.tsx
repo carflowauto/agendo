@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { hasSupabaseEnv } from "@/lib/env";
 import { siteUrl } from "@/lib/site";
-import { btnPrimary, ConfigMissing, fieldClass, labelClass } from "@/components/ui";
+import { ConfigMissing } from "@/components/ui";
+import { authButton, authInput, authLabel } from "@/components/auth-shell";
 
 function mapAuth(message: string) {
   const lower = message.toLowerCase();
@@ -19,11 +22,12 @@ function mapAuth(message: string) {
 export function LoginForm({ suivant }: { suivant: string }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [visible, setVisible] = useState(false);
   if (!hasSupabaseEnv()) return <ConfigMissing />;
 
   return (
     <form
-      className="space-y-4"
+      className="mt-6"
       onSubmit={async (event) => {
         event.preventDefault();
         setPending(true);
@@ -43,16 +47,36 @@ export function LoginForm({ suivant }: { suivant: string }) {
         window.location.assign(next);
       }}
     >
-      {error ? <p className="rounded-xl bg-rose-50 text-rose-700 text-sm px-4 py-3">{error}</p> : null}
-      <label className={labelClass}>
+      {error ? <p className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
+      <label className={authLabel}>
         E-mail
-        <input name="email" type="email" required autoComplete="email" className={fieldClass} />
+        <span className="relative mt-1.5 block">
+          <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#E23B6E]" strokeWidth={1.8} />
+          <input name="email" type="email" required autoComplete="email" placeholder="vous@exemple.fr" className={`${authInput} pl-11`} />
+        </span>
       </label>
-      <label className={labelClass}>
+      <label className={`${authLabel} mt-4`}>
         Mot de passe
-        <input name="password" type="password" required autoComplete="current-password" minLength={8} className={fieldClass} />
+        <span className="relative mt-1.5 block">
+          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#E23B6E]" strokeWidth={1.8} />
+          <input
+            name="password"
+            type={visible ? "text" : "password"}
+            required
+            autoComplete="current-password"
+            minLength={8}
+            placeholder="••••••••"
+            className={`${authInput} pl-11 pr-11`}
+          />
+          <button type="button" onClick={() => setVisible((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#E23B6E]" aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
+            {visible ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+          </button>
+        </span>
       </label>
-      <button className={`${btnPrimary} w-full`} disabled={pending}>
+      <p className="mt-2 text-right">
+        <Link href="/mot-de-passe-oublie" className="text-[14px] font-medium text-[#E23B6E]">Mot de passe oublié ?</Link>
+      </p>
+      <button className={`${authButton} mt-4`} disabled={pending}>
         {pending ? "Connexion…" : "Se connecter"}
       </button>
     </form>
@@ -65,7 +89,7 @@ export function ForgotForm() {
   if (!hasSupabaseEnv()) return <ConfigMissing />;
   return (
     <form
-      className="space-y-4"
+      className="mt-6"
       onSubmit={async (event) => {
         event.preventDefault();
         setError(null);
@@ -78,10 +102,16 @@ export function ForgotForm() {
         else setInfo("Si un compte existe avec cet e-mail, un lien de réinitialisation vient d’être envoyé.");
       }}
     >
-      {error ? <p className="rounded-xl bg-rose-50 text-rose-700 text-sm px-4 py-3">{error}</p> : null}
-      {info ? <p className="rounded-xl bg-emerald-50 text-emerald-800 text-sm px-4 py-3">{info}</p> : null}
-      <label className={labelClass}>E-mail<input name="email" type="email" required className={fieldClass} /></label>
-      <button className={`${btnPrimary} w-full`}>Envoyer le lien</button>
+      {error ? <p className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
+      {info ? <p className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{info}</p> : null}
+      <label className={authLabel}>
+        E-mail
+        <span className="relative mt-1.5 block">
+          <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#E23B6E]" strokeWidth={1.8} />
+          <input name="email" type="email" required placeholder="vous@exemple.fr" className={`${authInput} pl-11`} />
+        </span>
+      </label>
+      <button className={`${authButton} mt-5`}>Envoyer le lien</button>
     </form>
   );
 }
@@ -89,6 +119,7 @@ export function ForgotForm() {
 export function PasswordForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
   return (
     <form
       className="space-y-3"
@@ -109,8 +140,17 @@ export function PasswordForm() {
     >
       {error ? <p className="text-sm text-rose-700">{error}</p> : null}
       {message ? <p className="text-sm text-emerald-700">{message}</p> : null}
-      <label className={labelClass}>Nouveau mot de passe<input name="password" type="password" minLength={8} required className={fieldClass} /></label>
-      <button className={btnPrimary}>Mettre à jour</button>
+      <label className={authLabel}>
+        Nouveau mot de passe
+        <span className="relative mt-1.5 block">
+          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#E23B6E]" strokeWidth={1.8} />
+          <input name="password" type={visible ? "text" : "password"} minLength={8} required placeholder="8 caractères minimum" className={`${authInput} pl-11 pr-11`} />
+          <button type="button" onClick={() => setVisible((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#E23B6E]" aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
+            {visible ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+          </button>
+        </span>
+      </label>
+      <button className={authButton}>Mettre à jour</button>
     </form>
   );
 }
