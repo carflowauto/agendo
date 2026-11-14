@@ -6,7 +6,7 @@ import { dbError } from "@/lib/db-error";
 import { hasSupabaseEnv } from "@/lib/env";
 import { eurosToCents } from "@/lib/money";
 import { phoneDigits } from "@/lib/phone";
-import { isDateKey, zonedWallTimeToUtc } from "@/lib/dates";
+import { addDays, isDateKey, zonedWallTimeToUtc } from "@/lib/dates";
 import { siteUrl } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 import { RESERVED_SLUGS } from "@/lib/types";
@@ -205,6 +205,23 @@ export async function createBlock(formData: FormData) {
   revalidatePath("/espace/agenda");
   revalidatePath("/espace/aujourdhui");
   redirect(`${back}&ok=${encodeURIComponent("Créneau bloqué")}`);
+}
+
+export async function loadAgendaRange(fromDate: string, days: number) {
+  const { supabase, profile } = await requireProfile();
+  const count = Math.min(21, Math.max(1, Math.round(days)));
+  if (!isDateKey(fromDate)) return [];
+  const from = zonedWallTimeToUtc(fromDate, "00:00", profile.timezone);
+  const to = zonedWallTimeToUtc(addDays(fromDate, count), "00:00", profile.timezone);
+  const { data } = await supabase
+    .from("appointments")
+    .select("*")
+    .eq("profile_id", profile.id)
+    .neq("status", "cancelled")
+    .lt("starts_at", to.toISOString())
+    .gt("ends_at", from.toISOString())
+    .order("starts_at");
+  return (data ?? []) as import("@/lib/types").Appointment[];
 }
 
 export async function createInvitation(serviceId: string, slotsLocal: string[]) {
