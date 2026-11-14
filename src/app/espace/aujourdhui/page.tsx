@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { InviteDialog } from "@/components/invite-dialog";
 import { ProColumn } from "@/components/pro-shell";
+import { ShareCard } from "@/components/share-card";
 import { Flash, cardClass } from "@/components/ui";
 import { addDays, formatDayLong, formatDuration, formatTime, parisDateKey, zonedWallTimeToUtc } from "@/lib/dates";
 import { formatEuro } from "@/lib/money";
@@ -41,7 +42,8 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
     <ProColumn
       header={
         <div>
-          <p className="text-sm font-semibold text-brand-700">{formatDayLong(today)}</p>
+          <ShareCard slug={profile.slug} name={profile.full_name} />
+          <p className="mt-3 text-sm font-semibold text-brand-700">{formatDayLong(today)}</p>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Bonjour {profile.full_name}</h1>
           <p className="text-sm text-slate-500">{count === 0 ? "Aucun rendez-vous aujourd’hui" : `${count} rendez-vous · ${formatEuro(dayRevenue(appointments))}`}</p>
           <Flash ok={params.ok} erreur={params.erreur} />
@@ -57,9 +59,6 @@ export default async function TodayPage({ searchParams }: { searchParams: Promis
           ) : null}
           {next ? <AppointmentCard item={next} featured pageUrl={pageUrl} /> : null}
           <InviteDialog services={services} className="w-full" />
-          <Link href="/espace/ma-page" className="flex h-11 items-center justify-center rounded-2xl bg-white/80 text-sm font-semibold text-slate-800 shadow-sm">
-            Partager ma page
-          </Link>
         </>
       }
     >

@@ -1,11 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { hasReviews, mapsSearchUrl } from "./storefront";
+import { hasReviews, mapsSearchUrl, vitrineLabel, vitrineUrl } from "./storefront";
 
 test("l’adresse ouvre une recherche Maps", () => {
   const url = mapsSearchUrl("12 rue des Fleurs", "Lyon");
   assert.equal(url, "https://www.google.com/maps/search/?api=1&query=12%20rue%20des%20Fleurs%2C%20Lyon");
   assert.equal(mapsSearchUrl("  ", ""), null);
+});
+
+test("le lien vitrine public est celui du worker", () => {
+  assert.equal(vitrineLabel("les-ongles-de-lea"), "agendo.thomas-duraz-agent.workers.dev/les-ongles-de-lea");
+  assert.equal(vitrineUrl("les-ongles-de-lea"), "https://agendo.thomas-duraz-agent.workers.dev/les-ongles-de-lea");
 });
 
 test("la note est masquée sans avis", () => {

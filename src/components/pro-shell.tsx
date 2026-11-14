@@ -8,7 +8,6 @@ const TABS = [
   { href: "/espace/aujourdhui", label: "Aujourd'hui", icon: "today" },
   { href: "/espace/agenda", label: "Agenda", icon: "agenda" },
   { href: "/espace/clientes", label: "Clientes", icon: "people" },
-  { href: "/espace/ma-page", label: "Ma page", icon: "page" },
   { href: "/espace/reglages", label: "Réglages", icon: "gear" },
 ] as const;
 
@@ -38,14 +37,6 @@ function TabIcon({ name }: { name: (typeof TABS)[number]["icon"] }) {
       </svg>
     );
   }
-  if (name === "page") {
-    return (
-      <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-        <path strokeLinecap="round" d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z" />
-        <circle cx="12" cy="10" r="2" />
-      </svg>
-    );
-  }
   return (
     <svg className={common} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="3" />
@@ -63,7 +54,7 @@ export function ProShell({ activePath, children }: { profile?: { full_name: stri
     <div className="h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_#fde7f3_0%,_#eef2ff_38%,_#f8fafc_100%)] text-slate-800">
       <div className="mx-auto flex h-full w-full max-w-md flex-col">
         <div className="min-h-0 flex-1">{children}</div>
-        <nav className="shrink-0 grid h-[4.25rem] grid-cols-5 border-t border-white/70 bg-white/85 px-1 backdrop-blur" aria-label="Espace pro">
+        <nav className="shrink-0 grid h-[4.25rem] grid-cols-4 border-t border-white/70 bg-white/85 px-1 backdrop-blur" aria-label="Espace pro">
           {TABS.map((tab) => {
             const on = active(tab.href);
             return (
