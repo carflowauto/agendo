@@ -33,10 +33,12 @@ export function ProShell({ activePath, fullName = "", children }: { profile?: { 
   const current = activePath ?? pathname;
   const active = (href: string) => current === href || current.startsWith(`${href}/`);
   const name = fullName.trim();
+  // Sur ordinateur, l'écran « Connecter mon agenda » est cadré comme sa maquette : colonne blanche sur fond rose pâle.
+  const framed = current.startsWith("/espace/reglages/synchronisation");
 
   return (
-    <div className="h-dvh overflow-hidden bg-white text-[#4A1238]">
-      <div className="mx-auto flex h-full w-full max-w-md flex-col">
+    <div className={`h-dvh overflow-hidden bg-white text-[#4A1238] ${framed ? "md:bg-[#FBF4F6]" : ""}`}>
+      <div className={`mx-auto flex h-full w-full max-w-md flex-col ${framed ? "bg-white md:max-w-[448px] md:shadow-[0_0_0_1px_rgba(243,213,220,0.7),8px_0_24px_rgba(74,18,56,0.03),-8px_0_24px_rgba(74,18,56,0.03)]" : ""}`}>
         <header className="flex shrink-0 items-start justify-between gap-3 bg-white px-4 pb-2 pt-3">
           <div className="min-w-0">
             <SheensyLogo href="/espace/aujourdhui" />

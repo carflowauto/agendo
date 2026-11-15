@@ -1,32 +1,48 @@
-import { CopyButton } from "@/components/copy-button";
-import { SettingsScreen } from "@/components/settings-screen";
-import { cardClass } from "@/components/ui";
+import Link from "next/link";
+import { CalendarSync, type SyncPreviewRow } from "@/components/calendar-sync";
+import { addDays, formatDuration, formatTime, parisDateKey, zonedWallTimeToUtc } from "@/lib/dates";
+import { calendarFeedUrls } from "@/lib/ical";
 import { siteUrl } from "@/lib/site";
+import type { Appointment } from "@/lib/types";
 import { requireProfile } from "@/server/profile";
 
-export const metadata = { title: "Synchronisation" };
+export const metadata = { title: "Connecter mon agenda" };
+export const dynamic = "force-dynamic";
 
-export default async function SyncPage({ searchParams }: { searchParams: Promise<{ ok?: string; erreur?: string }> }) {
-  const params = await searchParams;
+export default async function SyncPage() {
   const { supabase, profile } = await requireProfile();
-  const { data } = await supabase.from("google_calendar_connections").select("status, last_error").eq("profile_id", profile.id).maybeSingle();
-  const ical = `${siteUrl()}/ical/${profile.ical_token}`;
-  const webcal = ical.replace(/^https?:/, "webcal:");
-  const google = data as { status: string; last_error: string | null } | null;
+  const urls = calendarFeedUrls(siteUrl(), profile.ical_token);
+  const connected = Boolean(profile.ical_connected_at || profile.ical_last_fetched_at);
+
+  let today: SyncPreviewRow[] = [];
+  if (connected) {
+    const zone = profile.timezone || "Europe/Paris";
+    const day = parisDateKey();
+    const { data } = await supabase
+      .from("appointments")
+      .select("*")
+      .eq("profile_id", profile.id)
+      .neq("status", "cancelled")
+      .gte("starts_at", zonedWallTimeToUtc(day, "00:00", zone).toISOString())
+      .lt("starts_at", zonedWallTimeToUtc(addDays(day, 1), "00:00", zone).toISOString())
+      .order("starts_at");
+    today = ((data as Appointment[] | null) ?? []).map((a) => {
+      const minutes = Math.round((new Date(a.ends_at).getTime() - new Date(a.starts_at).getTime()) / 60000);
+      const blocked = a.status === "blocked";
+      return {
+        time: formatTime(a.starts_at),
+        name: blocked ? a.service_name || a.notes || "Indisponible" : a.client_name || "Rendez-vous",
+        detail: [blocked ? "" : a.service_name, minutes > 0 ? formatDuration(minutes) : ""].filter(Boolean).join(" · "),
+      };
+    });
+  }
+
   return (
-    <SettingsScreen title="Synchronisation" hint="Google Agenda et l’iPhone" ok={params.ok} erreur={params.erreur}>
-      <section className={`${cardClass} space-y-3 p-4`}>
-        <h2 className="font-bold">Google Agenda</h2>
-        <p className="text-sm text-slate-500">Préparé, pas encore activé. Statut : {google?.status ?? "not_connected"}.</p>
-        {google?.last_error ? <p className="text-sm text-rose-700">{google.last_error}</p> : null}
-        <a href="/api/google/connect" className="inline-flex h-11 items-center rounded-2xl bg-white px-4 text-sm font-semibold">Préparer la connexion</a>
-      </section>
-      <section className={`${cardClass} mt-3 space-y-2 p-4`}>
-        <h2 className="font-bold">Calendrier iPhone</h2>
-        <p className="text-sm text-slate-500">Abonnez-vous une fois. Ce lien contient les noms de vos clientes.</p>
-        <p className="break-all rounded-2xl bg-white px-3 py-2 text-xs">{webcal}</p>
-        <CopyButton value={ical} label="Copier le lien iCal" />
-      </section>
-    </SettingsScreen>
+    <div className="h-full overflow-y-auto bg-white px-4 pb-2.5 pt-3 md:pt-4">
+      <Link href="/espace/reglages" className="mb-0.5 inline-block text-[14px] font-semibold text-[#D9577A]">‹ Réglages</Link>
+      <h1 className="text-[24px] font-extrabold leading-[1.15] tracking-[-0.03em] text-[#4A1238]">Connecter mon agenda</h1>
+      <p className="mt-1 text-[13.5px] leading-[1.4] text-[#64748b]">Un appui suffit, puis tout se met à jour tout seul. Aucun compte à créer.</p>
+      <CalendarSync webcalUrl={urls.webcal} googleUrl={urls.google} feedUrl={urls.https} connected={connected} today={today} />
+    </div>
   );
 }
