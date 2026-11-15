@@ -12,6 +12,8 @@ export type Profile = {
   refill_weeks: number;
   timezone: string;
   ical_token: string;
+  ical_connected_at?: string | null;
+  ical_last_fetched_at?: string | null;
   created_at: string;
 };
 

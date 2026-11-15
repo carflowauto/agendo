@@ -11,7 +11,7 @@ const ROWS = [
   { href: "/espace/reglages/horaires", title: "Horaires", detail: "Jours d’ouverture" },
   { href: "/espace/reglages/conges", title: "Congés", detail: "Fermetures exceptionnelles" },
   { href: "/espace/reglages/preferences", title: "Délais et rappels", detail: "Préavis, rappel, remplissage" },
-  { href: "/espace/reglages/synchronisation", title: "Synchronisation", detail: "Google Agenda et iPhone" },
+  { href: "/espace/reglages/synchronisation", title: "Connecter mon agenda", detail: "iPhone, Google Agenda, Outlook" },
   { href: "/espace/reglages/mot-de-passe", title: "Mot de passe", detail: "Accès au compte" },
   { href: "/espace/reglages/exemple", title: "Données d’exemple", detail: "Remplir une journée type" },
 ];
