@@ -33,7 +33,7 @@ function AppleCalendarIcon() {
   );
 }
 
-function GoogleCalendarIcon() {
+export function GoogleCalendarIcon() {
   return (
     <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center overflow-hidden rounded-[7px]">
       <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
