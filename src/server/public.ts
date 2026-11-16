@@ -2,7 +2,8 @@
 
 import { dbError } from "@/lib/db-error";
 import { addDays, isDateKey, TIME_ZONE, zonedWallTimeToUtc } from "@/lib/dates";
-import { buildSlots, hourForDate } from "@/lib/slots";
+import { withGoogleBusy } from "@/lib/google/busy";
+import { buildSlots, hourForDate, type BusyInterval } from "@/lib/slots";
 import { createClient } from "@/lib/supabase/server";
 import type { BookingContext, BookingResult } from "@/lib/types";
 
@@ -14,11 +15,16 @@ export async function getWeekSlots(slug: string, serviceId: string, startDate: s
   const supabase = await createClient();
   const from = zonedWallTimeToUtc(startDate, "00:00");
   const to = zonedWallTimeToUtc(addDays(startDate, 7), "00:00");
-  const { data, error } = await supabase.rpc("get_booking_context", {
-    p_slug: slug,
-    p_from: from.toISOString(),
-    p_to: to.toISOString(),
-  });
+  const range = { p_slug: slug, p_from: from.toISOString(), p_to: to.toISOString() };
+  const [{ data, error }, googleBusy] = await Promise.all([
+    supabase.rpc("get_booking_context", range),
+    // Absences de l'agenda Google de la pro (début/fin seulement). En cas d'erreur : ignorées,
+    // la réservation reste de toute façon refusée côté base sur un créneau occupé.
+    supabase.rpc("get_google_busy", range).then(
+      (r) => (r.error ? [] : ((r.data as BusyInterval[] | null) ?? [])),
+      () => [] as BusyInterval[],
+    ),
+  ]);
   if (error) return { error: dbError(error), slots: empty };
   const ctx = data as BookingContext | null;
   if (!ctx) return { error: "Page introuvable.", slots: empty };
@@ -40,7 +46,7 @@ export async function getWeekSlots(slug: string, serviceId: string, startDate: s
         closes: hour?.closes ?? null,
         isClosed: closed,
         minNoticeMinutes: ctx.min_notice_minutes,
-        busy: ctx.busy ?? [],
+        busy: withGoogleBusy(ctx.busy ?? [], googleBusy),
         timeOff: ctx.time_off ?? [],
       }),
     };

@@ -15,7 +15,7 @@ export type DispatchEnv = {
 
 export type DispatchResult = { claimed: number; sent: number; failed: number; error?: string };
 
-async function rpc<T>(env: DispatchEnv, fn: string, body: Record<string, unknown>): Promise<T> {
+export async function rpc<T>(env: DispatchEnv, fn: string, body: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",
     headers: {
